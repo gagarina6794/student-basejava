@@ -41,6 +41,7 @@ public class ArrayStorage {
         }
         if (goalIndex == 0) storage[nextElemIndex] = null;
         else
+
             storage[--nextElemIndex] = null;
     }
 
