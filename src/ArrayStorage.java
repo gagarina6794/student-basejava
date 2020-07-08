@@ -13,8 +13,7 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        if (count < storage.length)
-        {
+        if (count < storage.length) {
             storage[count++] = r;
         }
     }
@@ -25,11 +24,14 @@ public class ArrayStorage {
                 return storage[i];
             }
         }
-       return null;
+        return null;
     }
 
     void delete(String uuid) {
-        int goalIndex = 0;
+        if (get(uuid) == null){
+            return;
+        }
+        int goalIndex = -1;
         for (int i = 0; i < count; i++) {
             if ((storage[i].uuid).equals(uuid)) {
                 goalIndex = i;
@@ -42,13 +44,10 @@ public class ArrayStorage {
         }
         if (goalIndex == 0) {
             storage[count] = null;
-            if (count != 0 )
-            {
+            if (count != 0) {
                 count--;
             }
-        }
-        else
-        {
+        } else {
             storage[--count] = null;
         }
     }
@@ -57,12 +56,11 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] tempStorageArray = new Resume[count];
-        for (int i = 0; i< count; i++)
-        {
-            tempStorageArray[i] = storage[i];
+        Resume[] resumes = new Resume[count];
+        for (int i = 0; i < count; i++) {
+            resumes[i] = storage[i];
         }
-        return tempStorageArray;
+        return resumes;
     }
 
     int size() {
