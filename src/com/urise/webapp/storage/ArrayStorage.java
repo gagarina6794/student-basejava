@@ -17,7 +17,7 @@ public class ArrayStorage {
         if (goalIndex != -1) {
             storage[goalIndex] = resume;
         } else {
-            System.out.println("Resume " + resume.getUuid() +  " can't be found");
+            System.out.println("Resume " + resume.getUuid() + " can't be found");
         }
     }
 
@@ -32,7 +32,7 @@ public class ArrayStorage {
                 storage[count++] = resume;
             }
         } else {
-            System.out.println("Resume " + resume.getUuid() +  " exist in this storage");
+            System.out.println("Resume " + resume.getUuid() + " exist in this storage");
         }
     }
 
@@ -55,7 +55,7 @@ public class ArrayStorage {
             storage[count] = null;
             count--;
         } else {
-            System.out.println("Resume " + uuid +" doesn't exist in this storage");
+            System.out.println("Resume " + uuid + " doesn't exist in this storage");
         }
     }
 
@@ -74,8 +74,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-
-        return Arrays.copyOf(storage,count);
+        return Arrays.copyOf(storage, count);
     }
 
     public int size() {
