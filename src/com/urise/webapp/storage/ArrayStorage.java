@@ -8,7 +8,7 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    private Resume[] storage = new Resume[10_000];
     private int count = 0;
 
 
@@ -22,7 +22,7 @@ public class ArrayStorage {
     }
 
     public void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage,0,count, null);
         count = 0;
     }
 
@@ -48,10 +48,8 @@ public class ArrayStorage {
     public void delete(String uuid) {
         int goalIndex = findItemIndex(uuid);
         if (goalIndex != -1) {
-
-            for (int i = goalIndex; i < count - 1; i++) {
-                storage[i] = storage[i + 1];
-            }
+            if (count - 1 - goalIndex >= 0)
+                System.arraycopy(storage, goalIndex + 1, storage, goalIndex, count - 1 - goalIndex);
             storage[count] = null;
             count--;
         } else {
