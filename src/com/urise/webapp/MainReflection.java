@@ -10,5 +10,6 @@ public class MainReflection {
         Resume resume = new Resume();
         Method reflectionMethod = resume.getClass().getMethod("toString");
         System.out.println(reflectionMethod.invoke(resume));
+        System.out.println(resume.getUuid());
     }
 }

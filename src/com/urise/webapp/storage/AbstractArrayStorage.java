@@ -12,9 +12,9 @@ public abstract class AbstractArrayStorage implements Storage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int count = 0;
 
-    public int getStorageLimit(){
+   /* public int getStorageLimit(){
         return STORAGE_LIMIT;
-    };
+    };*/
 
     public int size() {
         return count;
@@ -27,7 +27,7 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public Resume get(String uuid) {
         int goalIndex = findItemIndex(uuid);
-        if (goalIndex == -1) {
+        if (goalIndex < 0) {
             throw new NotExistStorageException(uuid);
         }
         return storage[goalIndex];
@@ -43,9 +43,11 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void save(Resume resume) {
-        if (findItemIndex(resume.getUuid()) < 0) {
+        int goalIndex = findItemIndex(resume.getUuid());
+        if (goalIndex < 0) {
             if (count < storage.length) {
-                saveItem(resume);
+                saveResume(resume, goalIndex);
+                count++;
             } else {
                 throw new StorageException("Storage overflow", resume.getUuid());
             }
@@ -56,9 +58,9 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void delete(String uuid) {
         int goalIndex = findItemIndex(uuid);
-        if (goalIndex != -1) {
-            deleteItem(uuid, goalIndex);
-            count--;
+        if (goalIndex >= 0) {
+            deleteResume(uuid, goalIndex);
+            storage[count--] = null;
         } else {
             throw new NotExistStorageException(uuid);
         }
@@ -69,6 +71,8 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     protected abstract int findItemIndex(String uuid);
-    protected abstract void deleteItem(String uuid, int deleteIndex);
-    protected abstract void saveItem(Resume resume);
+
+    protected abstract void deleteResume(String uuid, int deleteIndex);
+
+    protected abstract void saveResume(Resume resume, int saveIndex);
 }

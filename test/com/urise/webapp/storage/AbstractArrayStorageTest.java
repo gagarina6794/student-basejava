@@ -16,8 +16,8 @@ public class AbstractArrayStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
 
-    public AbstractArrayStorageTest(Storage storage) {
-        this.storage = storage;
+  public AbstractArrayStorageTest(Storage storage) {
+       this.storage = storage;
     }
 
     @Before
@@ -99,9 +99,11 @@ public class AbstractArrayStorageTest {
     @Test(expected = StorageException.class)
     public void storageOverflow() throws Exception {
         int currentSize = storage.size();
+        int check = 0;
         try {
-            for (int i = currentSize; i < storage.getStorageLimit(); i++) {
+            for (int i = currentSize; i < 10_000; i++) {
                 storage.save(new Resume());
+                check = i;
             }
         } catch (Exception ex) {
             fail("Throwed exeption before main test");

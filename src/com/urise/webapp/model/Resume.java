@@ -5,16 +5,19 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
-public class Resume implements Comparable<Resume>{
+public class Resume implements Comparable<Resume> {
 
     // Unique identifier
     private String uuid;
-    public Resume(){
+
+    public Resume() {
         this(UUID.randomUUID().toString());
     }
-    public Resume(String uuid){
+
+    public Resume(String uuid) {
         this.uuid = uuid;
     }
+
     public String getUuid() {
         return uuid;
     }
@@ -42,7 +45,6 @@ public class Resume implements Comparable<Resume>{
     public int hashCode() {
         return uuid.hashCode();
     }
-
 
     @Override
     public int compareTo(Resume o) {
