@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AbstractArrayStorageTest {
+public abstract class AbstractArrayStorageTest {
     protected Storage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -84,28 +84,26 @@ public class AbstractArrayStorageTest {
 
     @Test
     public void getAll() throws Exception {
-        String[] expectedArray;
+        Resume[] expectedArray;
+        Resume r1 = new Resume("uuid1");
+        Resume r2 = new Resume("uuid2");
+        Resume r3 = new Resume("uuid3");
         if (storage.getClass() == SortedArrayStorage.class) {
-            expectedArray = new String[]{"uuid1", "uuid2", "uuid3"};
+            expectedArray = new Resume[]{r1, r2, r3};
         } else {
-            expectedArray = new String[]{"uuid1", "uuid3", "uuid2"};
+            expectedArray = new Resume[]{r1,  r3, r2};
         }
-        int i = 0;
-        for (Resume item : storage.getAll()) {
-            Assert.assertEquals(expectedArray[i++], item.toString());
-        }
+        Assert.assertArrayEquals(expectedArray,storage.getAll());
     }
 
     @Test(expected = StorageException.class)
     public void storageOverflow() throws Exception {
         int currentSize = storage.size();
-        int check = 0;
         try {
             for (int i = currentSize; i < 10_000; i++) {
                 storage.save(new Resume());
-                check = i;
             }
-        } catch (Exception ex) {
+        } catch (ExistStorageException ex) {
             fail("Throwed exeption before main test");
         }
         storage.save(new Resume());

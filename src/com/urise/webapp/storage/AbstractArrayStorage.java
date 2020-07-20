@@ -12,10 +12,6 @@ public abstract class AbstractArrayStorage implements Storage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int count = 0;
 
-   /* public int getStorageLimit(){
-        return STORAGE_LIMIT;
-    };*/
-
     public int size() {
         return count;
     }
@@ -26,7 +22,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public Resume get(String uuid) {
-        int goalIndex = findItemIndex(uuid);
+        int goalIndex = findResumeIndex(uuid);
         if (goalIndex < 0) {
             throw new NotExistStorageException(uuid);
         }
@@ -34,7 +30,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void update(Resume resume) {
-        int goalIndex = findItemIndex(resume.getUuid());
+        int goalIndex = findResumeIndex(resume.getUuid());
         if (goalIndex >= 0) {
             storage[goalIndex] = resume;
         } else {
@@ -43,7 +39,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void save(Resume resume) {
-        int goalIndex = findItemIndex(resume.getUuid());
+        int goalIndex = findResumeIndex(resume.getUuid());
         if (goalIndex < 0) {
             if (count < storage.length) {
                 saveResume(resume, goalIndex);
@@ -57,7 +53,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void delete(String uuid) {
-        int goalIndex = findItemIndex(uuid);
+        int goalIndex = findResumeIndex(uuid);
         if (goalIndex >= 0) {
             deleteResume(uuid, goalIndex);
             storage[count--] = null;
@@ -70,7 +66,7 @@ public abstract class AbstractArrayStorage implements Storage {
         return Arrays.copyOfRange(storage, 0, count);
     }
 
-    protected abstract int findItemIndex(String uuid);
+    protected abstract int findResumeIndex(String uuid);
 
     protected abstract void deleteResume(String uuid, int deleteIndex);
 
