@@ -8,8 +8,13 @@ public class ListStorage extends AbstractStorage {
     List<Resume> resumes = new ArrayList<>();
 
     @Override
-    protected void updateInStorage(Resume resume) {
-        resumes.set(resumes.indexOf(resume), resume);
+    protected int findResumeIndex(String uuid) {
+        return resumes.indexOf(new Resume(uuid));
+    }
+
+    @Override
+    protected void updateInStorage(Resume resume, int goalIndex) {
+        resumes.set(goalIndex, resume);
     }
 
     @Override
@@ -18,22 +23,27 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveInStorage(Resume resume) {
+    protected void saveInStorage(Resume resume, int goalIndex) {
         resumes.add(resume);
     }
 
     @Override
-    protected Resume getFromStorage(String uuid) {
-        return resumes.get(resumes.indexOf(new Resume(uuid)));
+    protected Resume getFromStorage(int goalIndex) {
+        return resumes.get(goalIndex);
     }
 
     @Override
-    protected void deleteFromStorage(String uuid) {
-        resumes.remove(resumes.indexOf(new Resume(uuid)));
+    protected void deleteFromStorage(int goalIndex) {
+        resumes.remove(goalIndex);
     }
 
     @Override
     protected Resume[] getAllStorage() {
         return resumes.stream().toArray(Resume[]::new);
+    }
+
+    @Override
+    protected int getSize() {
+        return resumes.size();
     }
 }
