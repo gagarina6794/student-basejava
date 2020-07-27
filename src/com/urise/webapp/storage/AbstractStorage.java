@@ -17,11 +17,6 @@ public abstract class AbstractStorage implements Storage {
     }
 
     @Override
-    public void clear() {
-        clearStorage();
-    }
-
-    @Override
     public void save(Resume resume) {
         int goalIndex = findResumeIndex(resume.getUuid());
         if (goalIndex < 0) {
@@ -50,30 +45,13 @@ public abstract class AbstractStorage implements Storage {
         }
     }
 
-    @Override
-    public Resume[] getAll() {
-        return getAllStorage();
-    }
-
-    @Override
-    public int size() {
-        return getSize();
-    }
-
     protected abstract int findResumeIndex(String uuid);
 
     protected abstract void updateInStorage(Resume resume, int goalIndex);
-
-    protected abstract void clearStorage();
 
     protected abstract void saveInStorage(Resume resume, int goalIndex);
 
     protected abstract Resume getFromStorage(int goalIndex);
 
     protected abstract void deleteFromStorage(int goalIndex);
-
-    protected abstract Resume[] getAllStorage();
-
-    protected abstract int getSize();
-
 }

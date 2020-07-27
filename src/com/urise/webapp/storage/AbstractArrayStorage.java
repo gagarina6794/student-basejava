@@ -10,7 +10,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int count = 0;
 
-    protected void clearStorage() {
+    public void clear() {
         Arrays.fill(storage, 0, count, null);
         count = 0;
     }
@@ -32,16 +32,16 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         }
     }
 
-    protected void deleteFromStorage(int goalIndex) {
+    public void deleteFromStorage(int goalIndex) {
         deleteResume(goalIndex);
         storage[count--] = null;
     }
 
-    protected Resume[] getAllStorage() {
+    public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, count);
     }
 
-    protected int getSize(){
+    public int size(){
         return count;
     }
 

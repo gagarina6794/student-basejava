@@ -18,7 +18,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void clearStorage() {
+    public void clear() {
         resumes.clear();
     }
 
@@ -38,12 +38,12 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume[] getAllStorage() {
+    public Resume[] getAll() {
         return resumes.stream().toArray(Resume[]::new);
     }
 
     @Override
-    protected int getSize() {
+    public int size() {
         return resumes.size();
     }
 }
