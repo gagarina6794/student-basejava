@@ -7,7 +7,7 @@ import com.urise.webapp.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    protected int findResumeIndex(String uuid) {
+    protected Object findResumeKey(String uuid) {
         int goalIndex = -1;
         for (int i = 0; i < count; i++) {
             if ((storage[i].getUuid()).equals(uuid)) {

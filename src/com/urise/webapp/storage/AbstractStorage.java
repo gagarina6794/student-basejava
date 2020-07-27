@@ -8,50 +8,50 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        int goalIndex = findResumeIndex(resume.getUuid());
-        if (goalIndex >= 0) {
-            updateInStorage(resume, goalIndex);
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
+        var searchKey = existCheck(resume);
+        updateInStorage(resume, searchKey);
     }
 
     @Override
     public void save(Resume resume) {
-        int goalIndex = findResumeIndex(resume.getUuid());
-        if (goalIndex < 0) {
-            saveInStorage(resume, goalIndex);
-        } else {
-            throw new ExistStorageException(resume.getUuid());
+        try {
+            existCheck(resume);
+        } catch (NotExistStorageException ex) {
+            saveInStorage(resume, findResumeKey(resume.getUuid()));
+            return;
         }
+        throw new ExistStorageException(resume.getUuid());
     }
 
     @Override
     public Resume get(String uuid) {
-        int goalIndex = findResumeIndex(uuid);
-        if (goalIndex < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return getFromStorage(goalIndex);
+        var searchKey = existCheck(new Resume(uuid));
+        return getFromStorage(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        int goalIndex = findResumeIndex(uuid);
-        if (goalIndex >= 0) {
-            deleteFromStorage(goalIndex);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        var searchKey = existCheck(new Resume(uuid));
+        deleteFromStorage(searchKey);
     }
 
-    protected abstract int findResumeIndex(String uuid);
+    private Object existCheck(Resume resume) {
+        Object goalIndex = findResumeKey(resume.getUuid());
+        if (goalIndex.getClass() != String.class) {
+            if ((int) goalIndex < 0) {
+                throw new NotExistStorageException(resume.getUuid());
+            }
+        }
+        return goalIndex;
+    }
 
-    protected abstract void updateInStorage(Resume resume, int goalIndex);
+    protected abstract Object findResumeKey(String uuid);
 
-    protected abstract void saveInStorage(Resume resume, int goalIndex);
+    protected abstract void updateInStorage(Resume resume, Object goalIndex);
 
-    protected abstract Resume getFromStorage(int goalIndex);
+    protected abstract void saveInStorage(Resume resume, Object goalIndex);
 
-    protected abstract void deleteFromStorage(int goalIndex);
+    protected abstract Resume getFromStorage(Object searchKey);
+
+    protected abstract void deleteFromStorage(Object searchKey);
 }

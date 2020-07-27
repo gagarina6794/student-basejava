@@ -15,25 +15,25 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         count = 0;
     }
 
-    protected Resume getFromStorage(int goalIndex) {
-        return storage[goalIndex];
+    protected Resume getFromStorage(Object goalIndex) {
+        return storage[(int)goalIndex];
     }
 
-    protected void updateInStorage(Resume resume, int goalIndex) {
-        storage[goalIndex] = resume;
+    protected void updateInStorage(Resume resume, Object goalIndex) {
+        storage[(int)goalIndex] = resume;
     }
 
-    protected void saveInStorage(Resume resume, int goalIndex) {
+    protected void saveInStorage(Resume resume, Object goalIndex) {
         if (count < storage.length) {
-            saveResume(resume, goalIndex);
+            saveResume(resume,(int)goalIndex);
             count++;
         } else {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
     }
 
-    public void deleteFromStorage(int goalIndex) {
-        deleteResume(goalIndex);
+    protected void deleteFromStorage(Object goalIndex) {
+        deleteResume((int)goalIndex);
         storage[count--] = null;
     }
 

@@ -9,49 +9,29 @@ public class MapStorage extends AbstractStorage {
     Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    protected int findResumeIndex(String uuid) {
-        int goalIndex = 0;
-        for (Map.Entry<String, Resume> entry : storage.entrySet()) {
-            if (entry.getKey().equals(uuid))
-                return goalIndex;
-            goalIndex++;
-        }
-        return -1;
+    protected Object findResumeKey(String uuid) {
+        return storage.containsKey(uuid)? uuid:-1;
     }
 
     @Override
-    protected void updateInStorage(Resume resume, int goalIndex) {
+    protected void updateInStorage(Resume resume, Object searchKey) {
         storage.replace(resume.getUuid(), resume);
     }
 
     @Override
-    protected void saveInStorage(Resume resume, int goalIndex) {
+    protected void saveInStorage(Resume resume, Object searchKey) {
         storage.put(resume.getUuid(), resume);
+
     }
 
     @Override
-    protected Resume getFromStorage(int goalIndex) {
-        int currentIndex = 0;
-        for (Map.Entry<String, Resume> entry : storage.entrySet()) {
-            if (currentIndex == goalIndex)
-                return entry.getValue();
-            goalIndex++;
-        }
-        return null;
+    protected Resume getFromStorage(Object searchKey) {
+        return storage.get(searchKey);
     }
 
     @Override
-    protected void deleteFromStorage(int goalIndex) {
-        String removeKey = "";
-        int currentIndex = 0;
-        for (Map.Entry<String, Resume> entry : storage.entrySet()) {
-            if (currentIndex == goalIndex) {
-                removeKey = entry.getKey();
-                break;
-            }
-            goalIndex++;
-        }
-        storage.remove(removeKey);
+    protected void deleteFromStorage(Object searchKey) {
+        storage.remove(searchKey);
     }
 
     @Override
