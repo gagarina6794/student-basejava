@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AbstractStorageTest {
+public abstract class AbstractStorageTest {
     protected Storage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -40,7 +40,7 @@ public class AbstractStorageTest {
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals("uuid2", storage.get("uuid2").getUuid());
+        Assert.assertEquals(new Resume(UUID_2), storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -51,7 +51,7 @@ public class AbstractStorageTest {
     @Test
     public void update() throws Exception {//не знаю на что проверить этот тест
         storage.update(new Resume("uuid1"));
-        Assert.assertEquals("uuid1", storage.get("uuid1").getUuid());
+        Assert.assertEquals(new Resume(UUID_1), storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -62,7 +62,13 @@ public class AbstractStorageTest {
     @Test
     public void save() throws Exception {
         storage.save(new Resume("uuid4"));
-        Assert.assertEquals("uuid4", storage.get("uuid4").getUuid());
+        Assert.assertEquals(new Resume("uuid4"), storage.get("uuid4"));
+    }
+
+    @Test
+    public void saveSize() throws Exception {
+        storage.save(new Resume("uuid4"));
+        Assert.assertEquals(4, storage.size());
     }
 
     @Test(expected = ExistStorageException.class)
@@ -70,8 +76,14 @@ public class AbstractStorageTest {
         storage.save(new Resume("uuid1"));
     }
 
-    @Test
+    @Test(expected = NotExistStorageException.class)
     public void delete() throws Exception {
+        storage.delete("uuid3");
+        storage.get(UUID_3);
+    }
+
+    @Test
+    public void deleteSize() throws Exception {
         storage.delete("uuid3");
         Assert.assertEquals(2, storage.size());
     }
@@ -83,18 +95,18 @@ public class AbstractStorageTest {
 
     @Test
     public void getAll() throws Exception {
-        Resume[] expectedArray;
+        Resume[] expectedResumes;
         Resume r1 = new Resume("uuid1");
         Resume r2 = new Resume("uuid2");
         Resume r3 = new Resume("uuid3");
         if (storage.getClass() == SortedArrayStorage.class) {
-            expectedArray = new Resume[]{r1, r2, r3};
+            expectedResumes = new Resume[]{r1, r2, r3};
         } else if (storage.getClass() == MapStorage.class) {
-            expectedArray = new Resume[]{r2, r1, r3};
+            expectedResumes = new Resume[]{r2, r1, r3};
         } else {
-            expectedArray = new Resume[]{r1, r3, r2};
+            expectedResumes = new Resume[]{r1, r3, r2};
         }
-        Assert.assertArrayEquals(expectedArray, storage.getAll());
+        Assert.assertArrayEquals(expectedResumes, storage.getAll());
     }
 
 }

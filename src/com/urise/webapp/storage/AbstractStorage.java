@@ -8,7 +8,7 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        var searchKey = existCheck(resume);
+        Object searchKey = existCheck(resume);
         updateInStorage(resume, searchKey);
     }
 
@@ -25,13 +25,13 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        var searchKey = existCheck(new Resume(uuid));
+        Object searchKey = existCheck(new Resume(uuid));
         return getFromStorage(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        var searchKey = existCheck(new Resume(uuid));
+        Object searchKey = existCheck(new Resume(uuid));
         deleteFromStorage(searchKey);
     }
 

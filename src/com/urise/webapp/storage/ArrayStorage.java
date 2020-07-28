@@ -20,7 +20,7 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void deleteResume(int deleteIndex) {
-        storage[deleteIndex] = storage[count];
+        storage[deleteIndex] = storage[count-1];
     }
 
     @Override
