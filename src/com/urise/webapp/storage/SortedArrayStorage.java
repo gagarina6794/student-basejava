@@ -8,21 +8,22 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected Object findResumeKey(String uuid) {
-        Resume searchKey = new Resume();
-        searchKey.setUuid(uuid);
-        return Arrays.binarySearch(storage, 0, count, searchKey);
+       // Resume[] resumes = getAll();
+        return Arrays.binarySearch(getStorage(), 0, size(), new Resume(uuid));
     }
 
     @Override
-    protected void deleteResume(int deleteIndex) {
-        if (count - 1 - deleteIndex >= 0)
-            System.arraycopy(storage, deleteIndex + 1, storage, deleteIndex, count - 1 - deleteIndex);
+    protected void deleteResume(int index) {
+        Resume[] resumes = getStorage();
+        if (size() - 1 - index >= 0)
+            System.arraycopy(resumes, index + 1, resumes, index, size() - 1 - index);
     }
 
     @Override
-    protected void saveResume(Resume resume, int goalIndex) {
-        goalIndex = -(goalIndex) - 1;
-        System.arraycopy(storage, goalIndex, storage, goalIndex + 1, count - goalIndex);
-        storage[goalIndex] = resume;
+    protected void saveResume(Resume resume, int index) {
+        index = -(index) - 1;
+        Resume[] resumes = getStorage();
+        System.arraycopy(resumes, index, resumes, index + 1, size() - index);
+        resumes[index] = resume;
     }
 }

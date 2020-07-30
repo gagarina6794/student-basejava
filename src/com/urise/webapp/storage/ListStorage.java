@@ -5,7 +5,7 @@ import com.urise.webapp.model.Resume;
 import java.util.*;
 
 public class ListStorage extends AbstractStorage {
-    List<Resume> resumes = new ArrayList<>();
+    private List<Resume> resumes = new ArrayList<>();
 
     @Override
     protected Object findResumeKey(String uuid) {
@@ -13,8 +13,13 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateInStorage(Resume resume, Object goalIndex) {
-        resumes.set((int)goalIndex, resume);
+    protected boolean isKeyExist(Resume resume) {
+        return (int) findResumeKey(resume.getUuid()) >= 0;
+    }
+
+    @Override
+    protected void updateInStorage(Resume resume, Object index) {
+        resumes.set((int) index, resume);
     }
 
     @Override
@@ -23,18 +28,18 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveInStorage(Resume resume, Object goalIndex) {
+    protected void saveInStorage(Resume resume, Object index) {
         resumes.add(resume);
     }
 
     @Override
-    protected Resume getFromStorage(Object goalIndex) {
-        return resumes.get((int)goalIndex);
+    protected Resume getFromStorage(Object index) {
+        return resumes.get((int) index);
     }
 
     @Override
-    protected void deleteFromStorage(Object goalIndex) {
-        resumes.remove((int)goalIndex);
+    protected void deleteFromStorage(Object index) {
+        resumes.remove((int) index);
     }
 
     @Override
@@ -46,4 +51,6 @@ public class ListStorage extends AbstractStorage {
     public int size() {
         return resumes.size();
     }
+
+
 }

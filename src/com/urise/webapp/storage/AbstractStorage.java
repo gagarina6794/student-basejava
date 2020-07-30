@@ -8,14 +8,14 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        Object searchKey = existCheck(resume);
+        Object searchKey = getSearchKeyIfExist(resume);
         updateInStorage(resume, searchKey);
     }
 
     @Override
     public void save(Resume resume) {
         try {
-            existCheck(resume);
+            getSearchKeyIfExist(resume);
         } catch (NotExistStorageException ex) {
             saveInStorage(resume, findResumeKey(resume.getUuid()));
             return;
@@ -25,27 +25,33 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = existCheck(new Resume(uuid));
+        Object searchKey = getSearchKeyIfExist(new Resume(uuid));
         return getFromStorage(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = existCheck(new Resume(uuid));
+        Object searchKey = getSearchKeyIfExist(new Resume(uuid));
         deleteFromStorage(searchKey);
     }
 
-    private Object existCheck(Resume resume) {
-        Object goalIndex = findResumeKey(resume.getUuid());
+    private Object getSearchKeyIfExist(Resume resume) {
+        if (!isKeyExist(resume)){
+            throw new NotExistStorageException(resume.getUuid());
+        }
+        return findResumeKey(resume.getUuid());
+       /* Object goalIndex = findResumeKey(resume.getUuid());
         if (goalIndex.getClass() != String.class) {
             if ((int) goalIndex < 0) {
-                throw new NotExistStorageException(resume.getUuid());
+
             }
         }
-        return goalIndex;
+        return goalIndex;*/
     }
 
     protected abstract Object findResumeKey(String uuid);
+
+    protected abstract boolean isKeyExist(Resume resume);
 
     protected abstract void updateInStorage(Resume resume, Object goalIndex);
 
