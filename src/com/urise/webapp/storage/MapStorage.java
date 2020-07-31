@@ -18,8 +18,8 @@ public class MapStorage extends AbstractStorage {
         storage.replace(resume.getUuid(), resume);
     }
     @Override
-    protected boolean isKeyExist(Resume resume) {
-        return findResumeKey(resume.getUuid()) != null;
+    protected boolean isKeyExist(Object checkKey) {
+        return checkKey != null;
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.urise.webapp.model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     protected Object findResumeKey(String uuid) {
-        Resume[] resumes = getAll();
+        Resume[] resumes = getStorage();
         int goalIndex = -1;
         for (int i = 0; i < size(); i++) {
             if ((resumes[i].getUuid()).equals(uuid)) {

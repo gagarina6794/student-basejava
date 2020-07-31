@@ -50,8 +50,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isKeyExist(Resume resume) {
-        return (int) findResumeKey(resume.getUuid()) >= 0;
+    protected boolean isKeyExist(Object checkKey) {
+        return (int) checkKey >= 0;
     }
 
     protected abstract void deleteResume(int index);

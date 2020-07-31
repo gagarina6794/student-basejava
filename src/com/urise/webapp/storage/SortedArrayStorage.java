@@ -8,7 +8,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected Object findResumeKey(String uuid) {
-       // Resume[] resumes = getAll();
         return Arrays.binarySearch(getStorage(), 0, size(), new Resume(uuid));
     }
 
