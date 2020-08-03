@@ -31,6 +31,4 @@ public class ArrayStorage extends AbstractArrayStorage {
         resumes[size()] = resume;
     }
 
-
-
 }

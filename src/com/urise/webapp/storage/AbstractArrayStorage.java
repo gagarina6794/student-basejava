@@ -4,6 +4,7 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
@@ -41,8 +42,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[count--] = null;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, count);
+    public List<Resume> getAllSorted() {
+        Resume[] tempArray = Arrays.copyOfRange(storage, 0, count);
+        Arrays.sort(tempArray,NAME_COMPARATOR);
+        return Arrays.asList(tempArray);
     }
 
     public int size(){
