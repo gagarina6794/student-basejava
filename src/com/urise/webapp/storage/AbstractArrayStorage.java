@@ -42,7 +42,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[count--] = null;
     }
 
-    public List<Resume> getAllSorted() {
+    protected List<Resume> storageAsSortedList() {
         Resume[] tempArray = Arrays.copyOfRange(storage, 0, count);
         Arrays.sort(tempArray,NAME_COMPARATOR);
         return Arrays.asList(tempArray);
