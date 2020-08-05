@@ -10,16 +10,6 @@ public class MapStorage extends AbstractMapStorage {
     }
 
     @Override
-    protected void updateInStorage(Resume resume, Object searchKey) {
-        storage.replace(resume.getUuid(), resume);
-    }
-
-    @Override
-    protected void saveInStorage(Resume resume, Object searchKey) {
-        storage.put(resume.getUuid(), resume);
-    }
-
-    @Override
     protected Resume getFromStorage(Object searchKey) {
         return storage.get(searchKey);
     }
