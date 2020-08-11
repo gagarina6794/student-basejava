@@ -5,21 +5,21 @@ import com.urise.webapp.model.Resume;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractMapStorage extends AbstractStorage {
+public abstract class AbstractMapStorage<T> extends AbstractStorage<T> {
     Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    protected void updateInStorage(Resume resume, Object searchKey) {
+    protected void updateInStorage(Resume resume, T searchKey) {
         storage.replace(resume.getUuid(), resume);
     }
 
     @Override
-    protected void saveInStorage(Resume resume, Object searchKey) {
+    protected void saveInStorage(Resume resume, T searchKey) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected boolean isKeyExist(Object checkKey) {
+    protected boolean isKeyExist(T checkKey) {
         return checkKey != null;
     }
 

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class AbstractStorage implements Storage {
+public abstract class AbstractStorage<T> implements Storage {
 
     protected static final Comparator<Resume> NAME_COMPARATOR =
             Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
@@ -22,7 +22,7 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        Object searchKey = getSearchKeyIfExist(resume.getUuid());
+        T searchKey = getSearchKeyIfExist(resume.getUuid());
         updateInStorage(resume, searchKey);
     }
 
@@ -39,18 +39,18 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = getSearchKeyIfExist(uuid);
+        T searchKey = getSearchKeyIfExist(uuid);
         return getFromStorage(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = getSearchKeyIfExist(uuid);
+        T searchKey = getSearchKeyIfExist(uuid);
         deleteFromStorage(searchKey);
     }
 
-    private Object getSearchKeyIfExist(String uuid) {
-        Object searchKey = findResumeKey(uuid);
+    private T getSearchKeyIfExist(String uuid) {
+        T searchKey = findResumeKey(uuid);
         if (!isKeyExist(searchKey)){
             throw new NotExistStorageException(uuid);
         }
@@ -63,17 +63,17 @@ public abstract class AbstractStorage implements Storage {
         return Arrays.asList(tempArray);
     }
 
-    protected abstract Object findResumeKey(String uuid);
+    protected abstract T findResumeKey(String uuid);
 
-    protected abstract boolean isKeyExist(Object checkKey);
+    protected abstract boolean isKeyExist(T checkKey);
 
-    protected abstract void updateInStorage(Resume resume, Object searchKey);
+    protected abstract void updateInStorage(Resume resume, T searchKey);
 
-    protected abstract void saveInStorage(Resume resume, Object searchKey);
+    protected abstract void saveInStorage(Resume resume, T searchKey);
 
-    protected abstract Resume getFromStorage(Object searchKey);
+    protected abstract Resume getFromStorage(T searchKey);
 
-    protected abstract void deleteFromStorage(Object searchKey);
+    protected abstract void deleteFromStorage(T searchKey);
 
     protected abstract Resume[] getAll();
 }

@@ -2,20 +2,20 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-public class MapStorage extends AbstractMapStorage {
+public class MapStorage extends AbstractMapStorage<String> {
 
     @Override
-    protected Object findResumeKey(String uuid) {
+    protected String findResumeKey(String uuid) {
         return storage.containsKey(uuid) ? uuid : null;
     }
 
     @Override
-    protected Resume getFromStorage(Object searchKey) {
+    protected Resume getFromStorage(String searchKey) {
         return storage.get(searchKey);
     }
 
     @Override
-    protected void deleteFromStorage(Object searchKey) {
+    protected void deleteFromStorage(String searchKey) {
         storage.remove(searchKey);
     }
 
