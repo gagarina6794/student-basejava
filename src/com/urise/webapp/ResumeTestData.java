@@ -4,7 +4,11 @@ import com.urise.webapp.model.*;
 
 public class ResumeTestData {
     public static void main(String[] args) {
-        Resume testResume = new Resume("Григоий Кисилин");
+
+    }
+
+    public static Resume fillResume(String uuid, String fullName){
+        Resume testResume = new Resume(uuid,fullName);
         testResume.contacts.put(ContactType.EMAIL, "gkisilin@yandex.ru");
         testResume.contacts.put(ContactType.GITHUB, "https://github.com/gkislin");
         testResume.contacts.put(ContactType.SKYPE, "grigory.kislin");
@@ -77,5 +81,6 @@ public class ResumeTestData {
                 "Alcatel\n" +
                 "09/1997-01/2005 Инженер по аппаратному и программному тестированию " +
                 "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM).\n"));
+        return testResume;
     }
 }

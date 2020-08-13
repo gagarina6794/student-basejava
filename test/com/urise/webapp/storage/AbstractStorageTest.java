@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
@@ -24,9 +25,9 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() throws Exception {
         storage.clear();
-        storage.save(new Resume(UUID_1, "Abr"));
-        storage.save(new Resume(UUID_3, "Abron"));
-        storage.save(new Resume(UUID_2, "Bro"));
+        storage.save(ResumeTestData.fillResume(UUID_1,"Abr"));
+        storage.save(ResumeTestData.fillResume(UUID_2,"Bro"));
+        storage.save(ResumeTestData.fillResume(UUID_3,"Abron"));
     }
 
     @Test
@@ -42,7 +43,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(new Resume(UUID_2, "Bro"), storage.get(UUID_2));
+        Assert.assertEquals(ResumeTestData.fillResume(UUID_2,"Bro"), storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -52,19 +53,19 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() throws Exception {
-        Resume newResume = new Resume(UUID_1, "Abr");
+        Resume newResume = ResumeTestData.fillResume(UUID_1,"Abr");
         storage.update(newResume);
         Assert.assertEquals(newResume, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() throws Exception {
-        storage.update(new Resume("dummy", ""));
+        storage.update(ResumeTestData.fillResume("dummy", ""));
     }
 
     @Test
     public void save() throws Exception {
-        Resume newResume = new Resume("uuid4", "Abr");
+        Resume newResume = ResumeTestData.fillResume("uuid4","Abr");;
         storage.save(newResume);
         Assert.assertEquals(newResume, storage.get("uuid4"));
         Assert.assertEquals(4, storage.size());
@@ -72,7 +73,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = ExistStorageException.class)
     public void saveExist() throws Exception {
-        storage.save(new Resume(UUID_1, "Abr"));
+        storage.save(ResumeTestData.fillResume(UUID_1,"Abr"));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -89,9 +90,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAllSorted() throws Exception {
-        Resume r1 = new Resume(UUID_1, "Abr");
-        Resume r2 = new Resume(UUID_2, "Bro");
-        Resume r3 = new Resume(UUID_3, "Abron");
+        Resume r1 = ResumeTestData.fillResume(UUID_1,"Abr");
+        Resume r2 = ResumeTestData.fillResume(UUID_2,"Bro");
+        Resume r3 = ResumeTestData.fillResume(UUID_3,"Abron");
         List<Resume> expectedResumes = new ArrayList<>();
         expectedResumes.add(r1);
         expectedResumes.add(r3);
