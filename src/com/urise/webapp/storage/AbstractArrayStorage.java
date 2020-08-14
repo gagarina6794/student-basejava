@@ -16,7 +16,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     protected Resume getFromStorage(Integer goalIndex) {
-        return storage[ goalIndex];
+        return storage[goalIndex];
     }
 
     protected void updateInStorage(Resume resume, Integer goalIndex) {
@@ -25,14 +25,14 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     protected void saveInStorage(Resume resume, Integer goalIndex) {
         if (count < storage.length) {
-            saveResume(resume,goalIndex);
+            saveResume(resume, goalIndex);
             count++;
         } else {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
     }
 
-    protected Resume[] getStorage(){
+    protected Resume[] getStorage() {
         return storage;
     }
 
@@ -42,10 +42,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     protected Resume[] getAll() {
-       return Arrays.copyOfRange(storage, 0, count);
+        return Arrays.copyOf(storage,  count);
     }
 
-    public int size(){
+    public int size() {
         return count;
     }
 

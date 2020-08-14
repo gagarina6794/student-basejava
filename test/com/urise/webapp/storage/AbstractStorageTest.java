@@ -93,10 +93,7 @@ public abstract class AbstractStorageTest {
         Resume r1 = ResumeTestData.fillResume(UUID_1,"Abr");
         Resume r2 = ResumeTestData.fillResume(UUID_2,"Bro");
         Resume r3 = ResumeTestData.fillResume(UUID_3,"Abron");
-        List<Resume> expectedResumes = new ArrayList<>();
-        expectedResumes.add(r1);
-        expectedResumes.add(r3);
-        expectedResumes.add(r2);
+        List<Resume> expectedResumes = Arrays.asList(r1,r3,r2);
         Assert.assertEquals(expectedResumes, storage.getAllSorted());
     }
 

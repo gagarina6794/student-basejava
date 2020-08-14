@@ -1,32 +1,39 @@
 package com.urise.webapp.model;
 
-import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Organization {
-    String name;
-    YearMonth yearFrom, yearTo;
-    String info;
+public class Organization implements Comparable<Organization> {
+    private List<Experience> experiences;
+    private String link;
+    private String organizationName;
 
-    public Organization(String name, YearMonth yearFrom, YearMonth yearTo, String info){
-        this.name = name;
-        this.yearFrom = yearFrom;
-        this.yearTo = yearTo;
-        this.info = info;
+    public Organization(String organizationName, String link) {
+        this.organizationName = organizationName;
+        this.link = link;
+        experiences = new ArrayList<>();
     }
 
-    public String getInfo() {
-        return info;
+    public void addExperience(Experience experience) {
+        experiences.add(experience);
     }
 
-    public YearMonth getYearFrom() {
-        return yearFrom;
+    public String getLink() {
+        return link;
     }
 
-    public YearMonth getYearTo() {
-        return yearTo;
+    public String getOrganizationName() {
+        return organizationName;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public int compareTo(Organization o) {
+        return organizationName.compareTo(o.getOrganizationName());
+    }
+
+    public String toString() {
+        return "\n*Organization name: '" + organizationName + '\'' +
+                "\n   link: " + link + '\n'
+                + experiences + '\'' + "";
     }
 }
