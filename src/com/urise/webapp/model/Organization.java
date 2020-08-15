@@ -2,6 +2,7 @@ package com.urise.webapp.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Organization implements Comparable<Organization> {
     private List<Experience> experiences;
@@ -35,5 +36,25 @@ public class Organization implements Comparable<Organization> {
         return "\n*Organization name: '" + organizationName + '\'' +
                 "\n   link: " + link + '\n'
                 + experiences + '\'' + "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Organization that = (Organization) o;
+
+        if (!Objects.equals(link, that.link)) return false;
+        if (!Objects.equals(organizationName, that.organizationName)) return false;
+        return  experiences.equals(that.experiences);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = experiences != null ? experiences.hashCode() : 0;
+        result = 31 * result + (link != null ? link.hashCode() : 0);
+        result = 31 * result + (organizationName != null ? organizationName.hashCode() : 0);
+        return result;
     }
 }

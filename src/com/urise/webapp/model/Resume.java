@@ -1,6 +1,7 @@
 package com.urise.webapp.model;
 
 import java.util.EnumMap;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -60,7 +61,7 @@ public class Resume implements Comparable<Resume> {
         return "UUID: " + uuid + "\nName: " + fullName + '\n' + contacts + '\n' + sections;
     }
 
-    @Override
+  /*  @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -71,6 +72,28 @@ public class Resume implements Comparable<Resume> {
     @Override
     public int hashCode() {
         return uuid.hashCode();
+    }*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Resume resume = (Resume) o;
+
+        if (!Objects.equals(uuid, resume.uuid)) return false;
+        if (!Objects.equals(fullName, resume.fullName)) return false;
+        if (!Objects.equals(contacts, resume.contacts)) return false;
+        return sections.equals(resume.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
+        result = 31 * result + (sections != null ? sections.hashCode() : 0);
+        result = 31 * result + (contacts != null ? contacts.hashCode() : 0);
+        return result;
     }
 
     @Override
