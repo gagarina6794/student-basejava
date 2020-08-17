@@ -10,7 +10,13 @@ public class ListStorage extends AbstractStorage<Integer> {
 
     @Override
     protected Integer findResumeKey(String uuid) {
-        return resumes.indexOf(new Resume(uuid, "noName"));
+        int goalIndex = 0;
+        for(Resume item: resumes){
+            if (item.getUuid() == uuid)
+                return goalIndex;
+            goalIndex++;
+        }
+        return -1;
     }
 
     @Override

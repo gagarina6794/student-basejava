@@ -4,10 +4,9 @@ import java.time.YearMonth;
 import java.util.Objects;
 
 public class Experience {
-    YearMonth yearFrom;
-    YearMonth yearTo;
-    String info;
-
+    private YearMonth yearFrom;
+    private YearMonth yearTo;
+    private String info;
 
     public Experience(YearMonth yearFrom, YearMonth yearTo, String info) {
         this.yearFrom = yearFrom;
@@ -42,9 +41,9 @@ public class Experience {
 
         Experience that = (Experience) o;
 
-        if (!Objects.equals(yearFrom, that.yearFrom)) return false;
+        if (yearFrom.compareTo(that.yearFrom) < 0) return false;
         if (!Objects.equals(yearTo, that.yearTo)) return false;
-        return Objects.equals(info, that.info);
+        return info.equals(that.info);
     }
 
     @Override
