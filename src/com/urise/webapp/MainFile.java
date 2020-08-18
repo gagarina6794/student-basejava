@@ -13,15 +13,17 @@ public class MainFile {
             }
         }*/
 
-        getAllFilesName(dir);
+        getAllFilesName(dir, 0);
     }
 
-    private static void getAllFilesName(File file) {
+    private static void getAllFilesName(File file, int spaceCount) {
         File[] files = file.listFiles();
         if (files != null) {
             for (File dir : files) {
+                for(int i = 0; i<spaceCount; i++)
+                    System.out.print("  ");
                 System.out.println(dir.getName());
-                getAllFilesName(dir);
+                getAllFilesName(dir, spaceCount+1);
             }
         }
     }

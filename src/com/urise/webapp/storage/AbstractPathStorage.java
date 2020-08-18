@@ -23,7 +23,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path findResumeKey(String uuid) {
-        return  ;
+        return  null;//?????????????
     }
 
     @Override
