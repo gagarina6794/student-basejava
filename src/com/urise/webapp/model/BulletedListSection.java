@@ -1,9 +1,10 @@
 package com.urise.webapp.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class BulletedListSection implements Section {
+public class BulletedListSection implements Section, Serializable {
     private List<String> content;
 
     public BulletedListSection(List<String> content){

@@ -58,9 +58,9 @@ public abstract class AbstractStorage<T> implements Storage {
     }
 
     public List<Resume> getAllSorted() {
-        Resume[] tempArray = getAll();
-        Arrays.sort(tempArray, NAME_COMPARATOR);
-        return Arrays.asList(tempArray);
+        Resume[] resumes = getAll();
+        Arrays.sort(resumes, NAME_COMPARATOR);
+        return Arrays.asList(resumes);
     }
 
     protected abstract T findResumeKey(String uuid);

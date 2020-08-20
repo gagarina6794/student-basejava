@@ -1,6 +1,8 @@
 package com.urise.webapp.model;
 
-public class SimpleTextSection implements Section {
+import java.io.Serializable;
+
+public class SimpleTextSection implements Section, Serializable {
     private String content;
 
     public SimpleTextSection(String information) {

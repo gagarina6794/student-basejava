@@ -1,10 +1,11 @@
 package com.urise.webapp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Organization implements Comparable<Organization> {
+public class Organization implements Comparable<Organization>, Serializable {
     private List<Experience> experiences;
     private String link;
     private String organizationName;

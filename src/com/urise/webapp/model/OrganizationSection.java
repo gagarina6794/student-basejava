@@ -1,10 +1,11 @@
 package com.urise.webapp.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganizationSection implements Section {
-    List<Organization> content;
+public class OrganizationSection implements Section, Serializable {
+    private List<Organization> content;
 
     public OrganizationSection(List<Organization> content) {
         this.content = content;
