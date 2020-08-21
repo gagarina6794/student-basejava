@@ -9,12 +9,12 @@ public abstract class AbstractMapStorage<T> extends AbstractStorage<T> {
     Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    protected void updateInStorage(Resume resume, T searchKey) {
+    protected void doUpdate(Resume resume, T searchKey) {
         storage.replace(resume.getUuid(), resume);
     }
 
     @Override
-    protected void saveInStorage(Resume resume, T searchKey) {
+    protected void doSave(Resume resume, T searchKey) {
         storage.put(resume.getUuid(), resume);
     }
 

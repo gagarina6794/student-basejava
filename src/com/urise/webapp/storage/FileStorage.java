@@ -10,13 +10,13 @@ public class FileStorage extends AbstractStorage<File> {
     private File directory;
     private StorageSerialization serialization;
 
-    protected FileStorage(File directory, StorageSerialization serialization){
-        Objects.requireNonNull(directory,"directory must not be not");
+    protected FileStorage(File directory, StorageSerialization serialization) {
+        Objects.requireNonNull(directory, "directory must not be not");
         this.serialization = serialization;
-        if (!directory.isDirectory()){
+        if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
-        if (!directory.canRead() || !directory.canWrite()){
+        if (!directory.canRead() || !directory.canWrite()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = directory;
@@ -33,28 +33,26 @@ public class FileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void updateInStorage(Resume resume, File file) {
+    protected void doUpdate(Resume resume, File file) {
         try {
-            serialization.doWrite(resume,new BufferedOutputStream(new FileOutputStream(file)));
+            serialization.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
     }
 
     @Override
-    protected void saveInStorage(Resume resume, File file) {
+    protected void doSave(Resume resume, File file) {
         try {
             file.createNewFile();
-            ///////
-            serialization.doWrite(resume,new BufferedOutputStream(new FileOutputStream(file)));
+            serialization.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
     }
 
-
     @Override
-    protected Resume getFromStorage(File file) {
+    protected Resume doGet(File file) {
         try {
             return serialization.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
@@ -62,9 +60,8 @@ public class FileStorage extends AbstractStorage<File> {
         }
     }
 
-
     @Override
-    protected void deleteFromStorage(File file) {
+    protected void doDelete(File file) {
         file.delete();
     }
 
@@ -75,7 +72,7 @@ public class FileStorage extends AbstractStorage<File> {
         int i = 0;
         if (files != null) {
             for (File dir : files) {
-                fileArray[i++] = getFromStorage(dir);
+                fileArray[i++] = doGet(dir);
             }
         }
         return fileArray;
@@ -93,6 +90,6 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        return directory.listFiles() != null?directory.listFiles().length:0;
+        return directory.listFiles() != null ? directory.listFiles().length : 0;
     }
 }

@@ -15,15 +15,15 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         count = 0;
     }
 
-    protected Resume getFromStorage(Integer goalIndex) {
+    protected Resume doGet(Integer goalIndex) {
         return storage[goalIndex];
     }
 
-    protected void updateInStorage(Resume resume, Integer goalIndex) {
+    protected void doUpdate(Resume resume, Integer goalIndex) {
         storage[goalIndex] = resume;
     }
 
-    protected void saveInStorage(Resume resume, Integer goalIndex) {
+    protected void doSave(Resume resume, Integer goalIndex) {
         if (count < storage.length) {
             saveResume(resume, goalIndex);
             count++;
@@ -36,7 +36,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         return storage;
     }
 
-    protected void deleteFromStorage(Integer goalIndex) {
+    protected void doDelete(Integer goalIndex) {
         deleteResume(goalIndex);
         storage[count--] = null;
     }

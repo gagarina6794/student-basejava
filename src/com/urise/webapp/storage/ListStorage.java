@@ -25,7 +25,7 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected void updateInStorage(Resume resume, Integer index) {
+    protected void doUpdate(Resume resume, Integer index) {
         resumes.set( index, resume);
     }
 
@@ -35,17 +35,17 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected void saveInStorage(Resume resume, Integer index) {
+    protected void doSave(Resume resume, Integer index) {
         resumes.add(resume);
     }
 
     @Override
-    protected Resume getFromStorage(Integer index) {
+    protected Resume doGet(Integer index) {
         return resumes.get(index);
     }
 
     @Override
-    protected void deleteFromStorage(Integer index) {
+    protected void doDelete(Integer index) {
         resumes.remove(index.intValue());
     }
 

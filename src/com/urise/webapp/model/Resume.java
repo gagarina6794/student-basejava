@@ -64,19 +64,6 @@ public class Resume implements Comparable<Resume>, Serializable {
         return "UUID: " + uuid + "\nName: " + fullName + '\n' + contacts + '\n' + sections;
     }
 
-  /*  @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Resume resume = (Resume) o;
-        return uuid.equals(resume.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid.hashCode();
-    }*/
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

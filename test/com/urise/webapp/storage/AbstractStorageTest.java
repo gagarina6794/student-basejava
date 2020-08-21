@@ -13,6 +13,7 @@ import java.util.*;
 public abstract class AbstractStorageTest {
     Storage storage;
 
+    protected static final String path = "C:/Users/Lera/basejava/storage";
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";

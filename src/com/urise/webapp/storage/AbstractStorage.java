@@ -12,18 +12,11 @@ public abstract class AbstractStorage<T> implements Storage {
 
     protected static final Comparator<Resume> NAME_COMPARATOR =
             Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
-    /*(o1, o2) -> {
-        if (o1.getFullName().compareTo(o2.getFullName()) == 0){
-            return o1.getUuid().compareTo(o2.getUuid());
-        } else {
-            return o1.getFullName().compareTo(o2.getFullName());
-        }
-    };*/
 
     @Override
     public void update(Resume resume) {
         T searchKey = getSearchKeyIfExist(resume.getUuid());
-        updateInStorage(resume, searchKey);
+        doUpdate(resume, searchKey);
     }
 
     @Override
@@ -31,7 +24,7 @@ public abstract class AbstractStorage<T> implements Storage {
         try {
             getSearchKeyIfExist(resume.getUuid());
         } catch (NotExistStorageException ex) {
-            saveInStorage(resume, findResumeKey(resume.getUuid()));
+            doSave(resume, findResumeKey(resume.getUuid()));
             return;
         }
         throw new ExistStorageException(resume.getUuid());
@@ -40,13 +33,13 @@ public abstract class AbstractStorage<T> implements Storage {
     @Override
     public Resume get(String uuid) {
         T searchKey = getSearchKeyIfExist(uuid);
-        return getFromStorage(searchKey);
+        return doGet(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
         T searchKey = getSearchKeyIfExist(uuid);
-        deleteFromStorage(searchKey);
+        doDelete(searchKey);
     }
 
     private T getSearchKeyIfExist(String uuid) {
@@ -67,13 +60,13 @@ public abstract class AbstractStorage<T> implements Storage {
 
     protected abstract boolean isKeyExist(T checkKey);
 
-    protected abstract void updateInStorage(Resume resume, T searchKey);
+    protected abstract void doUpdate(Resume resume, T searchKey);
 
-    protected abstract void saveInStorage(Resume resume, T searchKey);
+    protected abstract void doSave(Resume resume, T searchKey);
 
-    protected abstract Resume getFromStorage(T searchKey);
+    protected abstract Resume doGet(T searchKey);
 
-    protected abstract void deleteFromStorage(T searchKey);
+    protected abstract void doDelete(T searchKey);
 
     protected abstract Resume[] getAll();
 }

@@ -15,11 +15,11 @@ public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
     private StorageSerialization serialization;
 
-    protected PathStorage(String dir, StorageSerialization serialization){
+    protected PathStorage(String dir, StorageSerialization serialization) {
         this.directory = Paths.get(dir);
         this.serialization = serialization;
-        Objects.requireNonNull(directory,"directory must not be not");
-        if (!Files.isDirectory(directory) || !Files.isWritable(directory)){
+        Objects.requireNonNull(directory, "directory must not be not");
+        if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory");
         }
 
@@ -36,16 +36,16 @@ public class PathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected void updateInStorage(Resume resume, Path path) {
+    protected void doUpdate(Resume resume, Path path) {
         try {
-            serialization.doWrite(resume,new ObjectOutputStream(Files.newOutputStream(path)));
+            serialization.doWrite(resume, new ObjectOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("IO error", path.getFileName().toString(), e);
         }
     }
 
     @Override
-    protected void saveInStorage(Resume resume, Path path) {
+    protected void doSave(Resume resume, Path path) {
         try {
             Files.createFile(path);
             serialization.doWrite(resume, new ObjectOutputStream(Files.newOutputStream(path)));
@@ -55,7 +55,7 @@ public class PathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected Resume getFromStorage(Path path) {
+    protected Resume doGet(Path path) {
         try {
             return serialization.doRead(new ObjectInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
@@ -65,11 +65,11 @@ public class PathStorage extends AbstractStorage<Path> {
 
 
     @Override
-    protected void deleteFromStorage(Path path) {
+    protected void doDelete(Path path) {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            throw new StorageException("Path delete error",null);
+            throw new StorageException("Path delete error", null);
         }
     }
 
@@ -78,21 +78,21 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Resume[] fileArray = new Resume[size()];
             int i = 0;
-            for (var file: Files.list(directory).toArray()){
-                fileArray[i++] = getFromStorage((Path)file);
+            for (var file : Files.list(directory).toArray()) {
+                fileArray[i++] = doGet((Path) file);
             }
             return fileArray;
         } catch (IOException e) {
-            throw new StorageException("Path getAll error",null);
+            throw new StorageException("Path getAll error", null);
         }
     }
 
     @Override
     public void clear() {
         try {
-            Files.list(directory).forEach(this::deleteFromStorage);
+            Files.list(directory).forEach(this::doDelete);
         } catch (IOException e) {
-            throw new StorageException("Path clear error",null);
+            throw new StorageException("Path clear error", null);
         }
     }
 
@@ -101,7 +101,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return (int) Files.list(directory).count();
         } catch (IOException e) {
-            throw new StorageException("Path delete error",null);
+            throw new StorageException("Path delete error", null);
         }
 
     }
