@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.storage.serializer.StorageSerialization;
@@ -46,7 +47,7 @@ public class FileStorage extends AbstractStorage<File> {
     protected void doSave(Resume resume, File file) {
         try {
             file.createNewFile();
-            doUpdate(resume,file);
+            doUpdate(resume, file);
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
@@ -63,16 +64,17 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doDelete(File file) {
-        file.delete();
+        if (!file.delete())
+            throw new NotExistStorageException("This file doesn't exist: " + file.getName());
+
     }
 
     @Override
     protected Resume[] getAll() {
         Resume[] fileArray = new Resume[size()];
-        File[] files = directory.listFiles();
         int i = 0;
-        if (files != null) {
-            for (File dir : files) {
+        if (isDirectoryExist()) {
+            for (File dir : directory.listFiles()) {
                 fileArray[i++] = doGet(dir);
             }
         }
@@ -81,9 +83,8 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File dir : files) {
+        if (isDirectoryExist()) {
+            for (File dir : directory.listFiles()) {
                 dir.delete();
             }
         }
@@ -91,6 +92,14 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        return directory.listFiles() != null ? directory.listFiles().length : 0;
+        return isDirectoryExist() ? directory.listFiles().length : 0;
+    }
+
+    boolean isDirectoryExist() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("This directory doesn't exist", null);
+        }
+        return true;
     }
 }

@@ -2,12 +2,13 @@ package com.urise.webapp.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Organization implements Comparable<Organization> {
+public class Organization implements Comparable<Organization>, Serializable {
     private List<Experience> experiences;
     private String link;
     private String organizationName;
