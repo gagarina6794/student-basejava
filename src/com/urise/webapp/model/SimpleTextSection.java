@@ -1,9 +1,11 @@
 package com.urise.webapp.model;
 
-import java.io.Serializable;
+import java.util.Objects;
 
-public class SimpleTextSection implements Section, Serializable {
+public class SimpleTextSection extends Section{
     private String content;
+
+    public SimpleTextSection(){}
 
     public SimpleTextSection(String information) {
         content = information;
@@ -21,7 +23,7 @@ public class SimpleTextSection implements Section, Serializable {
 
         SimpleTextSection that = (SimpleTextSection) o;
 
-        return content != null ? content.equals(that.content) : that.content == null;
+        return Objects.equals(content, that.content);
     }
 
     @Override

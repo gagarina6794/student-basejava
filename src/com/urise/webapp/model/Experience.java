@@ -1,13 +1,24 @@
 package com.urise.webapp.model;
 
+import com.urise.webapp.util.YearMonthAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Experience implements Serializable {
+    @XmlJavaTypeAdapter(YearMonthAdapter.class)
     private YearMonth yearFrom;
+    @XmlJavaTypeAdapter(YearMonthAdapter.class)
     private YearMonth yearTo;
     private String info;
+
+    public Experience(){
+    }
 
     public Experience(YearMonth yearFrom, YearMonth yearTo, String info) {
         this.yearFrom = yearFrom;

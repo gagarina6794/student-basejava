@@ -2,6 +2,7 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.storage.serializer.StorageSerialization;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,7 +49,7 @@ public class PathStorage extends AbstractStorage<Path> {
     protected void doSave(Resume resume, Path path) {
         try {
             Files.createFile(path);
-            serialization.doWrite(resume, new ObjectOutputStream(Files.newOutputStream(path)));
+            doUpdate(resume,path);
         } catch (IOException e) {
             throw new StorageException("IO error", path.getFileName().toString(), e);
         }

@@ -2,6 +2,7 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.storage.serializer.StorageSerialization;
 
 import java.io.*;
 import java.util.Objects;
@@ -45,7 +46,7 @@ public class FileStorage extends AbstractStorage<File> {
     protected void doSave(Resume resume, File file) {
         try {
             file.createNewFile();
-            serialization.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
+            doUpdate(resume,file);
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }

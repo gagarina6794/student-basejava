@@ -1,24 +1,18 @@
 package com.urise.webapp.model;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class BulletedListSection implements Section, Serializable {
+public class BulletedListSection extends Section {
     private List<String> content;
 
     public BulletedListSection(List<String> content){
         this.content = content;
     }
 
-    /*public BulletedListSection(String information) {
-        StringBuilder data = new StringBuilder(information);
-        while (data.length() > 0) {
-            content.add(data.substring(0, data.indexOf("\n")));
-            data.delete(0, data.indexOf("\n") + 1);
-        }
+    public BulletedListSection() {
     }
-*/
+
     @Override
     public String toString() {
         return content.toString();
