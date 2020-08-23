@@ -6,6 +6,8 @@ import com.urise.webapp.model.Resume;
 import com.urise.webapp.storage.serializer.StorageSerialization;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class FileStorage extends AbstractStorage<File> {
@@ -70,15 +72,14 @@ public class FileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected Resume[] getAll() {
-        Resume[] fileArray = new Resume[size()];
-        int i = 0;
+    protected List<Resume> getAll() {
+        List<Resume> fileList = new ArrayList<>();
         if (isDirectoryExist()) {
             for (File dir : directory.listFiles()) {
-                fileArray[i++] = doGet(dir);
+                fileList.add(doGet(dir));
             }
         }
-        return fileArray;
+        return fileList;
     }
 
     @Override
@@ -98,7 +99,7 @@ public class FileStorage extends AbstractStorage<File> {
     boolean isDirectoryExist() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("This directory doesn't exist", null);
+            throw new StorageException("This directory doesn't exist");
         }
         return true;
     }

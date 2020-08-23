@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -71,18 +73,17 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
+            throw new StorageException("Path delete error");
         }
     }
 
     @Override
-    protected Resume[] getAll() {
-        Resume[] fileArray = new Resume[size()];
-        int i = 0;
+    protected List<Resume> getAll() {
+        List<Resume> fileList = new ArrayList<>();
         for (var file : toList().toArray()) {
-            fileArray[i++] = doGet((Path) file);
+            fileList.add(doGet((Path) file));
         }
-        return fileArray;
+        return fileList;
     }
 
     @Override
@@ -99,7 +100,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Directory error", null);
+            throw new StorageException("Directory error");
         }
     }
 }

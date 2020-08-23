@@ -20,6 +20,6 @@ public enum SectionType {
 
     @Override
     public String toString() {
-        return '\n' + title + ": ";
+        return title ;
     }
 }

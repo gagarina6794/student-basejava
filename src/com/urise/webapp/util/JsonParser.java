@@ -12,7 +12,8 @@ public class JsonParser {
            .registerTypeAdapter(Section.class, new JsonAdapter())
           .create();
 
-   public static <T> T read(Reader reader, Class<T> clazz){return GSON.fromJson(reader,clazz);}
+   public static <T> T read(Reader reader, Class<T> clazz){
+      return GSON.fromJson(reader,clazz);}
 
    public static <T> void write(T object, Writer writer){ GSON.toJson(object, writer); }
 
