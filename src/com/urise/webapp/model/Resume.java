@@ -67,6 +67,14 @@ public class Resume implements Comparable<Resume>, Serializable {
         this.fullName = fullName;
     }
 
+    public void addContacts(ContactType type, String value){
+        contacts.put(type, value);
+    }
+
+    public void addSection(SectionType type, Section section){
+        sections.put(type,section);
+    }
+
     @Override
     public String toString() {
         return "UUID: " + uuid + "\nName: " + fullName + '\n' + contacts + '\n' + sections;

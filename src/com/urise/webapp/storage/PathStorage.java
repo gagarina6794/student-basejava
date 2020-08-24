@@ -10,9 +10,9 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
@@ -79,24 +79,20 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected List<Resume> getAll() {
-        List<Resume> fileList = new ArrayList<>();
-        for (var file : toList().toArray()) {
-            fileList.add(doGet((Path) file));
-        }
-        return fileList;
+        return directoryToList().map(this::doGet).collect(Collectors.toList());
     }
 
     @Override
     public void clear() {
-        toList().forEach(this::doDelete);
+        directoryToList().forEach(this::doDelete);
     }
 
     @Override
     public int size() {
-        return (int) toList().count();
+        return (int) directoryToList().count();
     }
 
-    private Stream<Path> toList() {
+    private Stream<Path> directoryToList() {
         try {
             return Files.list(directory);
         } catch (IOException e) {

@@ -74,33 +74,31 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getAll() {
         List<Resume> fileList = new ArrayList<>();
-        if (isDirectoryExist()) {
-            for (File dir : directory.listFiles()) {
-                fileList.add(doGet(dir));
-            }
+        File[] files = directoryAsList();
+        for (File dir : directory.listFiles()) {
+            fileList.add(doGet(dir));
         }
         return fileList;
     }
 
     @Override
     public void clear() {
-        if (isDirectoryExist()) {
-            for (File dir : directory.listFiles()) {
-                dir.delete();
-            }
+        File[] files = directoryAsList();
+        for (File dir : files) {
+            dir.delete();
         }
     }
 
     @Override
     public int size() {
-        return isDirectoryExist() ? directory.listFiles().length : 0;
+        return directoryAsList().length;
     }
 
-    boolean isDirectoryExist() {
+    File[] directoryAsList() {
         File[] files = directory.listFiles();
         if (files == null) {
             throw new StorageException("This directory doesn't exist");
         }
-        return true;
+        return files;
     }
 }
