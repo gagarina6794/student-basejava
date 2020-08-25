@@ -1,27 +1,39 @@
 package com.urise.webapp.model;
 
+import com.urise.webapp.util.YearMonthAdapter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Comparable<Organization>, Serializable {
-    private List<Experience> experiences;
-    private String link;
+    private static final long serialVersionUID = 1L;
+
+    private List<Experience> experiences = new ArrayList<>();
+    private Link link;
     private String organizationName;
 
-    public Organization(){
-    }
-    public Organization(String organizationName, String link) {
-        this.organizationName = organizationName;
-        this.link = link;
-        experiences = new ArrayList<>();
+    public Organization() {
     }
 
-    public Organization(String organizationName, String link, List<Experience> experiences) {
+    public Organization(String organizationName, Link link) {
+        this.organizationName = organizationName;
+        this.link = link;
+    }
+
+    public Organization(String organizationName, Link link, Experience... experiences) {
+        this(organizationName, link, Arrays.asList(experiences));
+    }
+
+    public Organization(String organizationName, Link link, List<Experience> experiences) {
         this.organizationName = organizationName;
         this.link = link;
         this.experiences = experiences;
@@ -31,7 +43,7 @@ public class Organization implements Comparable<Organization>, Serializable {
         experiences.add(experience);
     }
 
-    public String getLink() {
+    public Link getLink() {
         return link;
     }
 
@@ -59,7 +71,7 @@ public class Organization implements Comparable<Organization>, Serializable {
 
         if (!Objects.equals(link, that.link)) return false;
         if (!Objects.equals(organizationName, that.organizationName)) return false;
-        return  experiences.equals(that.experiences);
+        return experiences.equals(that.experiences);
     }
 
     @Override
@@ -72,5 +84,85 @@ public class Organization implements Comparable<Organization>, Serializable {
 
     public List<Experience> getExperiences() {
         return experiences;
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Experience implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
+        private YearMonth yearFrom;
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
+        private YearMonth yearTo;
+        private String info;
+        private String title;
+
+        public Experience() {
+        }
+
+        public Experience(int startYear, Month startMonth,String title, String info ){
+            this(YearMonth.of(startYear,startMonth),YearMonth.now(),title,info);
+        }
+
+        public Experience(int startYear, Month startMonth,int endYear, Month endMonth,String title, String info ){
+            this(YearMonth.of(startYear,startMonth),YearMonth.of(endYear,endMonth),title,info);
+        }
+
+        public Experience(YearMonth yearFrom, YearMonth yearTo, String title, String info) {
+            Objects.requireNonNull(yearFrom, "yearFrom must not be null");
+            Objects.requireNonNull(yearTo, "yearTo must not be null");
+            Objects.requireNonNull(info, "info must not be null");
+            Objects.requireNonNull(title, "title must not be null");
+            this.yearFrom = yearFrom;
+            this.yearTo = yearTo;
+            this.title = title;
+            this.info = info;
+        }
+
+        public String getInfo() {
+            return info;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public YearMonth getYearFrom() {
+            return yearFrom;
+        }
+
+        public YearMonth getYearTo() {
+            return yearTo;
+        }
+
+
+        @Override
+        public String toString() {
+            return "\n   yearFrom: " + yearFrom +
+                    "\n   yearTo: " + yearTo +
+                    "\n   title: " + title +
+                    "\n   info: " + info + '\'' + "";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Experience that = (Experience) o;
+
+            if (!Objects.equals(yearFrom, that.yearFrom)) return false;
+            if (!Objects.equals(yearTo, that.yearTo)) return false;
+            if (!Objects.equals(info, that.info)) return false;
+            return Objects.equals(title, that.title);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = yearFrom != null ? yearFrom.hashCode() : 0;
+            result = 31 * result + (yearTo != null ? yearTo.hashCode() : 0);
+            result = 31 * result + (info != null ? info.hashCode() : 0);
+            return result;
+        }
     }
 }

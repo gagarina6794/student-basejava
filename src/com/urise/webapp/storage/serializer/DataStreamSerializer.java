@@ -55,11 +55,13 @@ public class DataStreamSerializer implements StorageSerialization {
                     dos.writeInt(organizationList.getContent().size());
                     for (var organization : organizationList.getContent()) {
                         dos.writeUTF(organization.getOrganizationName());
-                        dos.writeUTF(organization.getLink());
+                        dos.writeUTF(organization.getLink().getName());
+                        dos.writeUTF(organization.getLink().getUrl());
                         dos.writeInt(organization.getExperiences().size());
                         for (var experience : organization.getExperiences()) {
                             dos.writeUTF(experience.getYearFrom().toString());
                             dos.writeUTF(experience.getYearTo().toString());
+                            dos.writeUTF(experience.getTitle());
                             dos.writeUTF(experience.getInfo());
                         }
                     }
@@ -102,17 +104,16 @@ public class DataStreamSerializer implements StorageSerialization {
                         List<Organization> organizationList = new ArrayList<>();
                         for (int k = 0; k < contentOrganizationSize; k++) {
                             String name = dis.readUTF();
+                            dis.readUTF();
                             String link = dis.readUTF();
                             int experienceSize = dis.readInt();
-                            List<Experience> experiences = new ArrayList<>();
+                            List<Organization.Experience> experiences = new ArrayList<>();
                             for (int e = 0; e < experienceSize; e++) {
-                               // String data1 = dis.readUTF();
                                 YearMonth date1 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
-                               // String data2 = dis.readUTF();
                                 YearMonth date2 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
-                                experiences.add(new Experience(date1,date2,dis.readUTF()));
+                                experiences.add(new Organization.Experience(date1,date2,dis.readUTF(),dis.readUTF()));
                             }
-                            organizationList.add(new Organization(name,link,experiences));
+                            organizationList.add(new Organization(name,new Link(name,link),experiences));
                         }
                         resume.addSection(sectionType, new OrganizationSection(organizationList));
                         break;

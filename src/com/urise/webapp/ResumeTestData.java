@@ -32,13 +32,15 @@ public class ResumeTestData {
             data.delete(0, data.indexOf("-") + 1);
             YearMonth date2 = YearMonth.parse(data.substring(0, data.indexOf(" ")), DateTimeFormatter.ofPattern("M/uuuu"));
             data.delete(0, data.indexOf(" ") + 1);
+            String title = data.substring(0, data.indexOf("\n"));
+            data.delete(0, data.indexOf("\n") + 1);
             String info = data.substring(0, data.indexOf("\n"));
             data.delete(0, data.indexOf("\n") + 1);
-            Organization newItem = new Organization(organization, link);
+            Organization newItem = new Organization(organization, new Link(organization, link));
             if (content.contains(newItem)) {
-                content.get(content.indexOf(newItem)).addExperience(new Experience(date1, date2, info));
+                content.get(content.indexOf(newItem)).addExperience(new Organization.Experience(date1, date2,title, info));
             } else {
-                newItem.addExperience(new Experience(date1, date2, info));
+                newItem.addExperience(new Organization.Experience(date1, date2,title, info));
                 content.add(newItem);
             }
         }
@@ -49,44 +51,44 @@ public class ResumeTestData {
 
         List<Organization> educationContent = new ArrayList<>();
         fillOrganizationSection("Coursera\n" + "https://www.coursera.org/learn/progfun1\n" +
-                "03/2013-05/2013 \"Functional Programming Principles in Scala\" by Martin Odersky\n" +
+                "03/2013-05/2013 Слушатель\n" + "Functional Programming Principles in Scala\" by Martin Odersky\n" +
                 "Luxoft\n" + "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366\n" +
-                "03/2011-04/2011 Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"\n" +
+                "03/2011-04/2011 Слушатель\n"+ "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"\n" +
                 "Siemens AG\n" + "https://new.siemens.com/ru/ru.html\n" +
-                "01/2005-04/2005 3 месяца обучения мобильным IN сетям (Берлин)\n" +
+                "01/2005-04/2005 Слушатель\n" +  "3 месяца обучения мобильным IN сетям (Берлин)\n" +
                 "Alcatel\n" + "http://www.alcatel.ru/\n" +
-                "09/1997-03/1998 6 месяцев обучения цифровым телефонным сетям (Москва)\n" +
+                "09/1997-03/1998 Слушатель\n" +  " 6 месяцев обучения цифровым телефонным сетям (Москва)\n" +
                 "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики\n" + "http://www.ifmo.ru/\n" +
-                "09/1993-07/1996 Аспирантура (программист С, С++)\n" +
+                "09/1993-07/1996 Аспирантура (программист С, С++)\n" + " Аспирантура (программист С, С++)\n"+
                 "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики\n" + "http://www.ifmo.ru/\n" +
-                "09/1987-07/1993 Инженер (программист Fortran, C)\n" +
+                "09/1987-07/1993 Инженер (программист Fortran, C)\n" +"Инженер (программист Fortran, C)\n" +
                 "Заочная физико-техническая школа при МФТИ\n" + "p://www.school.mipt.ru/Images/Title.png\n" +
-                "09/1984-06/1987 Закончил с отличием\n", educationContent);
+                "09/1984-06/1987  Слушатель\n" + "Закончил с отличием\n", educationContent);
 
         List<Organization> experienceContent = new ArrayList<>();
         fillOrganizationSection("Java Online Projects\n" + "https://javaops.ru/\n" +
-                "10/2013-08/2020 Автор проекта. " +
+                "10/2013-08/2020 Автор проекта.\n" +
                 "Создание, организация и проведение Java онлайн проектов и стажировок.\n" +
                 "Wrike\n" + "https://www.wrike.com/\n" +
-                "10/2014-01/2016 Старший разработчик (backend) " +
+                "10/2014-01/2016 Старший разработчик (backend)\n " +
                 "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.\n" +
-                "RIT Center\n" + "doesn't have web sit\n" +
-                "04/2012-10/2014 Java архитектор " +
+                "RIT Center\n" + "doesn't have web site\n" +
+                "04/2012-10/2014 Java архитектор\n" +
                 "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python\n" +
                 "Luxoft (Deutsche Bank)\n" + "http://www.luxoft.ru/\n" +
-                "12/2010-04/2012 Ведущий программист " +
+                "12/2010-04/2012 Ведущий программист\n" +
                 "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. Реализация RIA-приложения для администрирования, мониторинга и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.\n" +
                 "Yota\n" + "https://www.yota.ru/\n" +
-                "06/2008-12/2010 Ведущий специалист " +
+                "06/2008-12/2010 Ведущий специалист\n" +
                 "Дизайн и имплементация Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)\n" +
                 "Enkata\n" + "http://enkata.com/\n" +
-                "03/2007-06/2008 Разработчик ПО " +
+                "03/2007-06/2008 Разработчик ПО\n" +
                 "Реализация клиентской (Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения (OLAP, Data mining).\n" +
                 "Siemens AG\n" + "https://new.siemens.com/ru/ru.html\n" +
-                "01/2005-02/2007 Разработчик ПО " +
+                "01/2005-02/2007 Разработчик ПО\n" +
                 "Разработка информационной модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix).\n" +
                 "Alcatel\n" + "http://www.alcatel.ru/\n" +
-                "09/1997-01/2005 Инженер по аппаратному и программному тестированию " +
+                "09/1997-01/2005 Инженер по аппаратному и программному тестированию\n" +
                 "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM).\n", experienceContent);
 
         List<String> achievementsContent = new ArrayList<>();

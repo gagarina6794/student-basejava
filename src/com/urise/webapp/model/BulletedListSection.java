@@ -1,17 +1,27 @@
 package com.urise.webapp.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class BulletedListSection extends Section {
-    private List<String> content;
+    private static final long serialVersionUID = 1L;
 
-    public BulletedListSection(List<String> content){
-        this.content = content;
-    }
+    private List<String> content;
 
     public BulletedListSection() {
     }
+
+    public BulletedListSection(String... items) {
+        this(Arrays.asList(items));
+    }
+
+    public BulletedListSection(List<String> content){
+        Objects.requireNonNull(content, "content must not be null");
+        this.content = content;
+    }
+
+
 
     @Override
     public String toString() {
