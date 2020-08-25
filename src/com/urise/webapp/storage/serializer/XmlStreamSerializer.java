@@ -11,7 +11,7 @@ public class XmlStreamSerializer implements StorageSerialization{
 
     public XmlStreamSerializer(){
         xmlParser = new XmlParser(Resume.class, Organization.class, OrganizationSection.class, Organization.Experience.class,
-                BulletedListSection.class, SimpleTextSection.class);
+                BulletedListSection.class, SimpleTextSection.class, Link.class);
     }
 
     @Override

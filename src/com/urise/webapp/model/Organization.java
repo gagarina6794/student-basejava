@@ -162,6 +162,7 @@ public class Organization implements Comparable<Organization>, Serializable {
             int result = yearFrom != null ? yearFrom.hashCode() : 0;
             result = 31 * result + (yearTo != null ? yearTo.hashCode() : 0);
             result = 31 * result + (info != null ? info.hashCode() : 0);
+            result = 31 * result + (title != null ? title.hashCode() : 0);
             return result;
         }
     }
