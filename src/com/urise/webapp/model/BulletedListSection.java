@@ -32,4 +32,8 @@ public class BulletedListSection extends Section {
     public int hashCode() {
         return content != null ? content.hashCode() : 0;
     }
+
+    public List<String> getContent() {
+        return content;
+    }
 }

@@ -6,6 +6,10 @@ import java.util.Objects;
 public class OrganizationSection extends Section{
     private List<Organization> content;
 
+    public List<Organization> getContent() {
+        return content;
+    }
+
     public OrganizationSection(){}
 
     public OrganizationSection(List<Organization> content) {

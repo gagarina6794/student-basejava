@@ -21,6 +21,12 @@ public class Organization implements Comparable<Organization>, Serializable {
         experiences = new ArrayList<>();
     }
 
+    public Organization(String organizationName, String link, List<Experience> experiences) {
+        this.organizationName = organizationName;
+        this.link = link;
+        this.experiences = experiences;
+    }
+
     public void addExperience(Experience experience) {
         experiences.add(experience);
     }
@@ -62,5 +68,9 @@ public class Organization implements Comparable<Organization>, Serializable {
         result = 31 * result + (link != null ? link.hashCode() : 0);
         result = 31 * result + (organizationName != null ? organizationName.hashCode() : 0);
         return result;
+    }
+
+    public List<Experience> getExperiences() {
+        return experiences;
     }
 }

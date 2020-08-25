@@ -5,6 +5,10 @@ import java.util.Objects;
 public class SimpleTextSection extends Section{
     private String content;
 
+    public String getContent() {
+        return content;
+    }
+
     public SimpleTextSection(){}
 
     public SimpleTextSection(String information) {
