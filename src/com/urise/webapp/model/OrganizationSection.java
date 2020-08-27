@@ -1,19 +1,22 @@
 package com.urise.webapp.model;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganizationSection extends Section{
+public class OrganizationSection extends Section implements Writable{
     private static final long serialVersionUID = 1L;
 
     private List<Organization> content;
 
-    public OrganizationSection(Organization... organizations){
+    public OrganizationSection(Organization... organizations) {
         this(Arrays.asList(organizations));
     }
 
-    public OrganizationSection(){}
+    public OrganizationSection() {
+    }
 
     public OrganizationSection(List<Organization> content) {
         this.content = content;
@@ -41,5 +44,22 @@ public class OrganizationSection extends Section{
     @Override
     public int hashCode() {
         return content != null ? content.hashCode() : 0;
+    }
+
+    @Override
+    public void writeCollection(DataOutputStream dos) throws IOException {
+        dos.writeInt(getContent().size());
+        for (var organization : getContent()) {
+            dos.writeUTF(organization.getOrganizationName());
+            dos.writeUTF(organization.getLink().getName());
+            dos.writeUTF(organization.getLink().getUrl());
+            dos.writeInt(organization.getExperiences().size());
+            for (var experience : organization.getExperiences()) {
+                dos.writeUTF(experience.getYearFrom().toString());
+                dos.writeUTF(experience.getYearTo().toString());
+                dos.writeUTF(experience.getTitle());
+                dos.writeUTF(experience.getInfo());
+            }
+        }
     }
 }

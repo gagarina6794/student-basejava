@@ -111,12 +111,11 @@ public class Organization implements Comparable<Organization>, Serializable {
         public Experience(YearMonth yearFrom, YearMonth yearTo, String title, String info) {
             Objects.requireNonNull(yearFrom, "yearFrom must not be null");
             Objects.requireNonNull(yearTo, "yearTo must not be null");
-            Objects.requireNonNull(info, "info must not be null");
             Objects.requireNonNull(title, "title must not be null");
             this.yearFrom = yearFrom;
             this.yearTo = yearTo;
             this.title = title;
-            this.info = info;
+            this.info = (info==null)?"":info;
         }
 
         public String getInfo() {

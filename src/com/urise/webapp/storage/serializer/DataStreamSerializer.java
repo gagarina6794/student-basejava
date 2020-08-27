@@ -33,41 +33,29 @@ public class DataStreamSerializer implements StorageSerialization {
     private void sectionsSerialize(DataOutputStream dos, Resume resume) throws IOException {
         Map<SectionType, Section> sections = resume.getSections();
         dos.writeInt(sections.size());
+        Writable writableCollection;
         for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
             dos.writeUTF(entry.getKey().name());
             switch (entry.getKey()) {
                 case ACHIEVEMENTS:
                 case QUALIFICATION:
-                    var bulletedSectionList = (BulletedListSection) entry.getValue();
-                    dos.writeInt(bulletedSectionList.getContent().size());
-                    for (String item : bulletedSectionList.getContent()) {
-                        dos.writeUTF(item);
-                    }
+                    writableCollection = (BulletedListSection) entry.getValue();
                     break;
                 case OBJECTIVE:
                 case PERSONAL:
-                    var simpleTextList = (SimpleTextSection) entry.getValue();
-                    dos.writeUTF(simpleTextList.getContent());
+                    writableCollection = (SimpleTextSection) entry.getValue();
                     break;
                 case EDUCATION:
                 case EXPERIENCE:
-                    var organizationList = (OrganizationSection) entry.getValue();
-                    dos.writeInt(organizationList.getContent().size());
-                    for (var organization : organizationList.getContent()) {
-                        dos.writeUTF(organization.getOrganizationName());
-                        dos.writeUTF(organization.getLink().getName());
-                        dos.writeUTF(organization.getLink().getUrl());
-                        dos.writeInt(organization.getExperiences().size());
-                        for (var experience : organization.getExperiences()) {
-                            dos.writeUTF(experience.getYearFrom().toString());
-                            dos.writeUTF(experience.getYearTo().toString());
-                            dos.writeUTF(experience.getTitle());
-                            dos.writeUTF(experience.getInfo());
-                        }
-                    }
+                    writableCollection = (OrganizationSection) entry.getValue();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + entry.getKey());
             }
+            writableCollection.writeCollection(dos);
         }
     }
+
 
     @Override
     public Resume doRead(InputStream is) throws IOException {
@@ -111,9 +99,9 @@ public class DataStreamSerializer implements StorageSerialization {
                             for (int e = 0; e < experienceSize; e++) {
                                 YearMonth date1 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
                                 YearMonth date2 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
-                                experiences.add(new Organization.Experience(date1,date2,dis.readUTF(),dis.readUTF()));
+                                experiences.add(new Organization.Experience(date1, date2, dis.readUTF(), dis.readUTF()));
                             }
-                            organizationList.add(new Organization(name,new Link(name,link),experiences));
+                            organizationList.add(new Organization(name, new Link(name, link), experiences));
                         }
                         resume.addSection(sectionType, new OrganizationSection(organizationList));
                         break;

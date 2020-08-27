@@ -1,8 +1,10 @@
 package com.urise.webapp.model;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
-public class SimpleTextSection extends Section{
+public class SimpleTextSection extends Section implements Writable{
     private static final long serialVersionUID = 1L;
 
     private String content;
@@ -35,5 +37,10 @@ public class SimpleTextSection extends Section{
     @Override
     public int hashCode() {
         return content != null ? content.hashCode() : 0;
+    }
+
+    @Override
+    public void writeCollection(DataOutputStream dos) throws IOException {
+        dos.writeUTF(getContent());
     }
 }
