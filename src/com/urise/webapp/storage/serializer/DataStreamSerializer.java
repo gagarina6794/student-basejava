@@ -6,8 +6,13 @@ import java.io.*;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+interface Writable<T> {
+    void writeCollection(T item) throws IOException;
+}
 
 public class DataStreamSerializer implements StorageSerialization {
 
@@ -30,29 +35,46 @@ public class DataStreamSerializer implements StorageSerialization {
         }
     }
 
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Writable<T> writable) throws IOException {
+        for (var item : collection) {
+            writable.writeCollection(item);
+        }
+    }
+
     private void sectionsSerialize(DataOutputStream dos, Resume resume) throws IOException {
         Map<SectionType, Section> sections = resume.getSections();
         dos.writeInt(sections.size());
-        Writable writableCollection;
         for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
             dos.writeUTF(entry.getKey().name());
             switch (entry.getKey()) {
                 case ACHIEVEMENTS:
                 case QUALIFICATION:
-                    writableCollection = (BulletedListSection) entry.getValue();
+                    dos.writeInt(((BulletedListSection) entry.getValue()).getContent().size());
+                    writeWithException(((BulletedListSection) entry.getValue()).getContent(), dos, item -> dos.writeUTF(item));
                     break;
                 case OBJECTIVE:
                 case PERSONAL:
-                    writableCollection = (SimpleTextSection) entry.getValue();
+                    dos.writeUTF(((SimpleTextSection) entry.getValue()).getContent());
                     break;
                 case EDUCATION:
                 case EXPERIENCE:
-                    writableCollection = (OrganizationSection) entry.getValue();
+                    dos.writeInt(((OrganizationSection) entry.getValue()).getContent().size());
+                    writeWithException(((OrganizationSection) entry.getValue()).getContent(), dos, item -> {
+                        dos.writeUTF(item.getOrganizationName());
+                        dos.writeUTF(item.getLink().getName());
+                        dos.writeUTF(item.getLink().getUrl());
+                        dos.writeInt(item.getExperiences().size());
+                        writeWithException(item.getExperiences(), dos, experience -> {
+                            dos.writeUTF(experience.getYearFrom().toString());
+                            dos.writeUTF(experience.getYearTo().toString());
+                            dos.writeUTF(experience.getTitle());
+                            dos.writeUTF(experience.getInfo());
+                        });
+                    });
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + entry.getKey());
             }
-            writableCollection.writeCollection(dos);
         }
     }
 
