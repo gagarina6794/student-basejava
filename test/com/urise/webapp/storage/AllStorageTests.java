@@ -3,8 +3,6 @@ package com.urise.webapp.storage;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import java.io.DataInputStream;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ArrayStorageTest.class,
@@ -16,7 +14,7 @@ import java.io.DataInputStream;
         ObjectFileStreamSerializationTest.class,
         XmlPathStreamSerializationTest.class,
         JsonPathStreamSerializationTest.class,
-        DataInputStream.class
+        DataStreamSerializationTest.class
 
 })
 public class AllStorageTests {
