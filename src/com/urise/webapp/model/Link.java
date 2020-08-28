@@ -9,15 +9,16 @@ import java.util.Objects;
 public class Link implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private  String name;
-    private  String url;
+    private String name;
+    private String url;
 
-    public Link(){}
+    public Link() {
+    }
 
     public Link(String name, String url) {
         Objects.requireNonNull(name, "name must not be null");
         this.name = name;
-        this.url = url == null? "":url;
+        this.url = url == null ? "" : url;
     }
 
     public String getName() {
@@ -29,11 +30,6 @@ public class Link implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Link(" + name + ',' + url + ')';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -42,7 +38,6 @@ public class Link implements Serializable {
 
         if (!name.equals(link.name)) return false;
         return Objects.equals(url, link.url);
-
     }
 
     @Override
@@ -50,5 +45,10 @@ public class Link implements Serializable {
         int result = name.hashCode();
         result = 31 * result + (url != null ? url.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Link(" + name + ',' + url + ')';
     }
 }

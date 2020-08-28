@@ -4,19 +4,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganizationSection extends Section{
+public class OrganizationSection extends Section {
     private static final long serialVersionUID = 1L;
 
     private List<Organization> content;
+
+    public OrganizationSection() {
+    }
 
     public OrganizationSection(Organization... organizations) {
         this(Arrays.asList(organizations));
     }
 
-    public OrganizationSection() {
-    }
-
     public OrganizationSection(List<Organization> content) {
+        Objects.requireNonNull(content, "content must not be null");
         this.content = content;
     }
 

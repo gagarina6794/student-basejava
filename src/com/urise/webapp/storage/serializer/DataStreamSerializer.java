@@ -24,61 +24,6 @@ public class DataStreamSerializer implements StorageSerialization {
         }
     }
 
-    private void contactsSerialize(DataOutputStream dos, Resume resume) throws IOException {
-        dos.writeUTF(resume.getUuid());
-        dos.writeUTF(resume.getFullName());
-        Map<ContactType, String> contacts = resume.getContacts();
-        dos.writeInt(contacts.size());
-        for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
-            dos.writeUTF(entry.getKey().name());
-            dos.writeUTF(entry.getValue());
-        }
-    }
-
-    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Writable<T> writable) throws IOException {
-        for (var item : collection) {
-            writable.writeCollection(item);
-        }
-    }
-
-    private void sectionsSerialize(DataOutputStream dos, Resume resume) throws IOException {
-        Map<SectionType, Section> sections = resume.getSections();
-        dos.writeInt(sections.size());
-        for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
-            dos.writeUTF(entry.getKey().name());
-            switch (entry.getKey()) {
-                case ACHIEVEMENTS:
-                case QUALIFICATION:
-                    dos.writeInt(((BulletedListSection) entry.getValue()).getContent().size());
-                    writeWithException(((BulletedListSection) entry.getValue()).getContent(), dos, item -> dos.writeUTF(item));
-                    break;
-                case OBJECTIVE:
-                case PERSONAL:
-                    dos.writeUTF(((SimpleTextSection) entry.getValue()).getContent());
-                    break;
-                case EDUCATION:
-                case EXPERIENCE:
-                    dos.writeInt(((OrganizationSection) entry.getValue()).getContent().size());
-                    writeWithException(((OrganizationSection) entry.getValue()).getContent(), dos, item -> {
-                        dos.writeUTF(item.getOrganizationName());
-                        dos.writeUTF(item.getLink().getName());
-                        dos.writeUTF(item.getLink().getUrl());
-                        dos.writeInt(item.getExperiences().size());
-                        writeWithException(item.getExperiences(), dos, experience -> {
-                            dos.writeUTF(experience.getYearFrom().toString());
-                            dos.writeUTF(experience.getYearTo().toString());
-                            dos.writeUTF(experience.getTitle());
-                            dos.writeUTF(experience.getInfo());
-                        });
-                    });
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + entry.getKey());
-            }
-        }
-    }
-
-
     @Override
     public Resume doRead(InputStream is) throws IOException {
         try (DataInputStream dis = new DataInputStream(is)) {
@@ -129,10 +74,61 @@ public class DataStreamSerializer implements StorageSerialization {
                         break;
                 }
             }
-
             return resume;
         }
     }
 
+    private void contactsSerialize(DataOutputStream dos, Resume resume) throws IOException {
+        dos.writeUTF(resume.getUuid());
+        dos.writeUTF(resume.getFullName());
+        Map<ContactType, String> contacts = resume.getContacts();
+        dos.writeInt(contacts.size());
+        for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
+            dos.writeUTF(entry.getKey().name());
+            dos.writeUTF(entry.getValue());
+        }
+    }
 
+    private void sectionsSerialize(DataOutputStream dos, Resume resume) throws IOException {
+        Map<SectionType, Section> sections = resume.getSections();
+        dos.writeInt(sections.size());
+        for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
+            dos.writeUTF(entry.getKey().name());
+            switch (entry.getKey()) {
+                case ACHIEVEMENTS:
+                case QUALIFICATION:
+                    dos.writeInt(((BulletedListSection) entry.getValue()).getContent().size());
+                    writeWithException(((BulletedListSection) entry.getValue()).getContent(), dos, dos::writeUTF);
+                    break;
+                case OBJECTIVE:
+                case PERSONAL:
+                    dos.writeUTF(((SimpleTextSection) entry.getValue()).getContent());
+                    break;
+                case EDUCATION:
+                case EXPERIENCE:
+                    dos.writeInt(((OrganizationSection) entry.getValue()).getContent().size());
+                    writeWithException(((OrganizationSection) entry.getValue()).getContent(), dos, item -> {
+                        dos.writeUTF(item.getOrganizationName());
+                        dos.writeUTF(item.getLink().getName());
+                        dos.writeUTF(item.getLink().getUrl());
+                        dos.writeInt(item.getExperiences().size());
+                        writeWithException(item.getExperiences(), dos, experience -> {
+                            dos.writeUTF(experience.getYearFrom().toString());
+                            dos.writeUTF(experience.getYearTo().toString());
+                            dos.writeUTF(experience.getTitle());
+                            dos.writeUTF(experience.getInfo());
+                        });
+                    });
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + entry.getKey());
+            }
+        }
+    }
+
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Writable<T> writable) throws IOException {
+        for (var item : collection) {
+            writable.writeCollection(item);
+        }
+    }
 }

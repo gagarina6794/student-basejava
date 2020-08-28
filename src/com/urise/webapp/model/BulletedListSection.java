@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class BulletedListSection extends Section{
+public class BulletedListSection extends Section {
     private static final long serialVersionUID = 1L;
 
     private List<String> content;
@@ -21,19 +21,15 @@ public class BulletedListSection extends Section{
         this.content = content;
     }
 
-
-    @Override
-    public String toString() {
-        return content.toString();
+    public List<String> getContent() {
+        return content;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         BulletedListSection that = (BulletedListSection) o;
-
         return Objects.equals(content, that.content);
     }
 
@@ -42,9 +38,9 @@ public class BulletedListSection extends Section{
         return content != null ? content.hashCode() : 0;
     }
 
-    public List<String> getContent() {
-        return content;
+    @Override
+    public String toString() {
+        return content.toString();
     }
-
 }
 

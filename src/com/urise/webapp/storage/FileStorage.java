@@ -68,7 +68,6 @@ public class FileStorage extends AbstractStorage<File> {
     protected void doDelete(File file) {
         if (!file.delete())
             throw new NotExistStorageException("This file doesn't exist: " + file.getName());
-
     }
 
     @Override

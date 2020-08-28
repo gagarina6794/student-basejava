@@ -58,6 +58,4 @@ public class ListStorage extends AbstractStorage<Integer> {
     public int size() {
         return resumes.size();
     }
-
-
 }

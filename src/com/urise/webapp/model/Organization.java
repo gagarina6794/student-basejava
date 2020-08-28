@@ -39,10 +39,6 @@ public class Organization implements Comparable<Organization>, Serializable {
         this.experiences = experiences;
     }
 
-    public void addExperience(Experience experience) {
-        experiences.add(experience);
-    }
-
     public Link getLink() {
         return link;
     }
@@ -51,15 +47,13 @@ public class Organization implements Comparable<Organization>, Serializable {
         return organizationName;
     }
 
+    public void addExperience(Experience experience) {
+        experiences.add(experience);
+    }
+
     @Override
     public int compareTo(Organization o) {
         return organizationName.compareTo(o.getOrganizationName());
-    }
-
-    public String toString() {
-        return "\n*Organization name: '" + organizationName + '\'' +
-                "\n   link: " + link + '\n'
-                + experiences + '\'' + "";
     }
 
     @Override
@@ -82,6 +76,12 @@ public class Organization implements Comparable<Organization>, Serializable {
         return result;
     }
 
+    public String toString() {
+        return "\n*Organization name: '" + organizationName + '\'' +
+                "\n   link: " + link + '\n'
+                + experiences + '\'' + "";
+    }
+
     public List<Experience> getExperiences() {
         return experiences;
     }
@@ -100,12 +100,12 @@ public class Organization implements Comparable<Organization>, Serializable {
         public Experience() {
         }
 
-        public Experience(int startYear, Month startMonth,String title, String info ){
-            this(YearMonth.of(startYear,startMonth),YearMonth.now(),title,info);
+        public Experience(int startYear, Month startMonth, String title, String info) {
+            this(YearMonth.of(startYear, startMonth), YearMonth.now(), title, info);
         }
 
-        public Experience(int startYear, Month startMonth,int endYear, Month endMonth,String title, String info ){
-            this(YearMonth.of(startYear,startMonth),YearMonth.of(endYear,endMonth),title,info);
+        public Experience(int startYear, Month startMonth, int endYear, Month endMonth, String title, String info) {
+            this(YearMonth.of(startYear, startMonth), YearMonth.of(endYear, endMonth), title, info);
         }
 
         public Experience(YearMonth yearFrom, YearMonth yearTo, String title, String info) {
@@ -115,7 +115,7 @@ public class Organization implements Comparable<Organization>, Serializable {
             this.yearFrom = yearFrom;
             this.yearTo = yearTo;
             this.title = title;
-            this.info = (info==null)?"":info;
+            this.info = (info == null) ? "" : info;
         }
 
         public String getInfo() {
@@ -132,15 +132,6 @@ public class Organization implements Comparable<Organization>, Serializable {
 
         public YearMonth getYearTo() {
             return yearTo;
-        }
-
-
-        @Override
-        public String toString() {
-            return "\n   yearFrom: " + yearFrom +
-                    "\n   yearTo: " + yearTo +
-                    "\n   title: " + title +
-                    "\n   info: " + info + '\'' + "";
         }
 
         @Override
@@ -163,6 +154,14 @@ public class Organization implements Comparable<Organization>, Serializable {
             result = 31 * result + (info != null ? info.hashCode() : 0);
             result = 31 * result + (title != null ? title.hashCode() : 0);
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "\n   yearFrom: " + yearFrom +
+                    "\n   yearTo: " + yearTo +
+                    "\n   title: " + title +
+                    "\n   info: " + info + '\'' + "";
         }
     }
 }

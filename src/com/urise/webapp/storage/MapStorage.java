@@ -18,5 +18,4 @@ public class MapStorage extends AbstractMapStorage<String> {
     protected void doDelete(String searchKey) {
         storage.remove(searchKey);
     }
-
 }

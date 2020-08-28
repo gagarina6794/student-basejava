@@ -136,6 +136,4 @@ public class ResumeTestData {
 
         return testResume;
     }
-
-
 }

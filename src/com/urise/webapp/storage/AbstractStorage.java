@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorage<T> implements Storage {
-
     protected static final Comparator<Resume> NAME_COMPARATOR =
             Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 

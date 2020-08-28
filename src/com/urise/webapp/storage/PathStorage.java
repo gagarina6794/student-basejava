@@ -26,7 +26,6 @@ public class PathStorage extends AbstractStorage<Path> {
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory");
         }
-
     }
 
     @Override

@@ -41,7 +41,5 @@ public class XmlParser {
         } catch (JAXBException e) {
            e.printStackTrace();
         }
-
     }
-
 }

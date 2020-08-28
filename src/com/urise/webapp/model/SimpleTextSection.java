@@ -11,24 +11,19 @@ public class SimpleTextSection extends Section {
         return content;
     }
 
-    public SimpleTextSection(){}
-
-    public SimpleTextSection(String information) {
-        content = information;
+    public SimpleTextSection() {
     }
 
-    @Override
-    public String toString() {
-        return content;
+    public SimpleTextSection(String information) {
+        Objects.requireNonNull(information, "information must not be null");
+        content = information;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         SimpleTextSection that = (SimpleTextSection) o;
-
         return Objects.equals(content, that.content);
     }
 
@@ -37,4 +32,8 @@ public class SimpleTextSection extends Section {
         return content != null ? content.hashCode() : 0;
     }
 
+    @Override
+    public String toString() {
+        return content;
+    }
 }
