@@ -14,6 +14,10 @@ interface Writable<T> {
     void writeCollection(T item) throws IOException;
 }
 
+interface Readable{
+    void readCollection() throws IOException;
+}
+
 public class DataStreamSerializer implements StorageSerialization {
 
     @Override
@@ -43,9 +47,7 @@ public class DataStreamSerializer implements StorageSerialization {
                     case QUALIFICATION:
                         int contentSize = dis.readInt();
                         List<String> contentList = new ArrayList<>();
-                        for (int j = 0; j < contentSize; j++) {
-                            contentList.add(dis.readUTF());
-                        }
+                        readWithException(contentList, dis, contentSize, () -> contentList.add(dis.readUTF()));
                         resume.getSections().put(sectionType, new BulletedListSection(contentList));
                         break;
                     case OBJECTIVE:
@@ -57,19 +59,20 @@ public class DataStreamSerializer implements StorageSerialization {
                     case EXPERIENCE:
                         int contentOrganizationSize = dis.readInt();
                         List<Organization> organizationList = new ArrayList<>();
-                        for (int k = 0; k < contentOrganizationSize; k++) {
+                        readWithException(organizationList, dis, contentOrganizationSize, () -> {
                             String name = dis.readUTF();
                             dis.readUTF();
                             String link = dis.readUTF();
                             int experienceSize = dis.readInt();
                             List<Organization.Experience> experiences = new ArrayList<>();
-                            for (int e = 0; e < experienceSize; e++) {
+                            readWithException(experiences, dis, experienceSize, () ->
+                            {
                                 YearMonth date1 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
                                 YearMonth date2 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
-                                experiences.add(new Organization.Experience(date1, date2, dis.readUTF(), dis.readUTF()));
-                            }
-                            organizationList.add(new Organization(name, new Link(name, link), experiences));
-                        }
+                                experiences.add( new Organization.Experience(date1, date2, dis.readUTF(), dis.readUTF()));
+                            });
+                            organizationList.add( new Organization(name, new Link(name, link), experiences));
+                        });
                         resume.addSection(sectionType, new OrganizationSection(organizationList));
                         break;
                 }
@@ -129,6 +132,12 @@ public class DataStreamSerializer implements StorageSerialization {
     private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Writable<T> writable) throws IOException {
         for (var item : collection) {
             writable.writeCollection(item);
+        }
+    }
+
+    private <T> void readWithException(Collection<T> collection, DataInputStream dis, int size, Readable readable) throws IOException {
+        for (int i = 0; i < size; i++) {
+            readable.readCollection();
         }
     }
 }
