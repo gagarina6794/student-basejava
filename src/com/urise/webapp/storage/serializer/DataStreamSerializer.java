@@ -5,16 +5,13 @@ import com.urise.webapp.model.*;
 import java.io.*;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 interface Writable<T> {
     void writeCollection(T item) throws IOException;
 }
 
-interface Readable{
+interface Readable {
     void readCollection() throws IOException;
 }
 
@@ -35,12 +32,14 @@ public class DataStreamSerializer implements StorageSerialization {
             String fullName = dis.readUTF();
             int size = dis.readInt();
             Resume resume = new Resume(uuid, fullName);
-            for (int i = 0; i < size; i++) {
-                resume.addContacts(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-
+            var contactsList = new EnumMap<ContactType, String>(ContactType.class);
+            readWithException(contactsList.entrySet(),dis, size, ()->{
+                contactsList.put(ContactType.valueOf(dis.readUTF()),dis.readUTF() );
+            });
+            resume.setContacts(contactsList);
             int sectionSize = dis.readInt();
-            for (int i = 0; i < sectionSize; i++) {
+            var sectionsList = new EnumMap<SectionType, Section>(SectionType.class);
+            readWithException(sectionsList.entrySet(),dis,sectionSize, ()->{
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 switch (sectionType) {
                     case ACHIEVEMENTS:
@@ -48,12 +47,12 @@ public class DataStreamSerializer implements StorageSerialization {
                         int contentSize = dis.readInt();
                         List<String> contentList = new ArrayList<>();
                         readWithException(contentList, dis, contentSize, () -> contentList.add(dis.readUTF()));
-                        resume.getSections().put(sectionType, new BulletedListSection(contentList));
+                        sectionsList.put(sectionType, new BulletedListSection(contentList));
                         break;
                     case OBJECTIVE:
                     case PERSONAL:
                         var content = dis.readUTF();
-                        resume.getSections().put(sectionType, new SimpleTextSection(content));
+                        sectionsList.put(sectionType, new SimpleTextSection(content));
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
@@ -69,14 +68,15 @@ public class DataStreamSerializer implements StorageSerialization {
                             {
                                 YearMonth date1 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
                                 YearMonth date2 = YearMonth.parse(dis.readUTF(), DateTimeFormatter.ofPattern("uuuu-M"));
-                                experiences.add( new Organization.Experience(date1, date2, dis.readUTF(), dis.readUTF()));
+                                experiences.add(new Organization.Experience(date1, date2, dis.readUTF(), dis.readUTF()));
                             });
-                            organizationList.add( new Organization(name, new Link(name, link), experiences));
+                            organizationList.add(new Organization(name, new Link(name, link), experiences));
                         });
-                        resume.addSection(sectionType, new OrganizationSection(organizationList));
+                        sectionsList.put(sectionType, new OrganizationSection(organizationList));
                         break;
                 }
-            }
+            });
+            resume.setSections(sectionsList);
             return resume;
         }
     }
@@ -86,16 +86,16 @@ public class DataStreamSerializer implements StorageSerialization {
         dos.writeUTF(resume.getFullName());
         Map<ContactType, String> contacts = resume.getContacts();
         dos.writeInt(contacts.size());
-        for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
+        writeWithException(contacts.entrySet(), dos, entry->{
             dos.writeUTF(entry.getKey().name());
             dos.writeUTF(entry.getValue());
-        }
+        });
     }
 
     private void sectionsSerialize(DataOutputStream dos, Resume resume) throws IOException {
         Map<SectionType, Section> sections = resume.getSections();
         dos.writeInt(sections.size());
-        for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
+        writeWithException(sections.entrySet(), dos, entry -> {
             dos.writeUTF(entry.getKey().name());
             switch (entry.getKey()) {
                 case ACHIEVEMENTS:
@@ -126,8 +126,9 @@ public class DataStreamSerializer implements StorageSerialization {
                 default:
                     throw new IllegalStateException("Unexpected value: " + entry.getKey());
             }
-        }
+        });
     }
+
 
     private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Writable<T> writable) throws IOException {
         for (var item : collection) {
