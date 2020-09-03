@@ -8,10 +8,14 @@ import java.util.Properties;
 
 public class Config {
     private static final Config INSTANCE = new Config();
-    protected static final File PROPS =new File(".\\storage\\resumes.properties") ;
-    public static Config get(){return INSTANCE;}
+    protected static final File PROPS =new File(".\\config\\resumes.properties") ;
+
     private Properties properties = new Properties();
     private File storageDir;
+
+    public static Config get(){
+        return INSTANCE;
+    }
 
     private Config(){
         try(InputStream is = new FileInputStream(PROPS)){
