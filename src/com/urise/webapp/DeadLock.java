@@ -5,27 +5,22 @@ public class DeadLock {
     public static Object LOCK2 = new Object();
     public static void main(String[] args) throws InterruptedException {
         Thread thread1 = new Thread(() -> {
-            synchronized (LOCK1){
-                System.out.println("1 поток держит lock1");
-                System.out.println("1 поток ждет lock2");
-                synchronized (LOCK2){
-                    System.out.println("1 поток держит lock2");
-                }
-            }
+           runLock(LOCK1,LOCK2, Thread.currentThread().getName());
         });
         Thread thread2 = new Thread(() -> {
-            synchronized (LOCK2){
-                System.out.println("2 поток держит lock2");
-                System.out.println("2 поток ждет lock1");
-                synchronized (LOCK1){
-                    System.out.println("2 поток держит lock1");
-                }
-            }
+          runLock(LOCK2, LOCK1, Thread.currentThread().getName());
         });
         thread1.start();
         thread2.start();
-        thread1.join();
-        thread2.join();
-        System.out.println("завершение выполнения потоков");
+    }
+
+    private static void runLock(Object lock1, Object lock2, String threadID){
+        synchronized (lock1){
+            System.out.println(threadID + " поток держит lock: " + lock1.toString());
+            System.out.println(threadID + " поток ждет lock: " + lock2.toString());
+            synchronized (lock2){
+                System.out.println(threadID + " поток держит lock: " + lock2.toString());
+            }
+        }
     }
 }
