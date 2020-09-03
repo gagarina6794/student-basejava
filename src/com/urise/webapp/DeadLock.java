@@ -18,7 +18,7 @@ public class DeadLock {
                 System.out.println("2 поток держит lock2");
                 System.out.println("2 поток ждет lock1");
                 synchronized (LOCK1){
-                    System.out.println("2 поток держит lock2");
+                    System.out.println("2 поток держит lock1");
                 }
             }
         });

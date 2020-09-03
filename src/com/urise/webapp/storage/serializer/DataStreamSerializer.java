@@ -57,9 +57,7 @@ public class DataStreamSerializer implements StorageSerialization {
                             String link = dis.readUTF();
                             List<Organization.Experience> experiences = new ArrayList<>();
                             readWithException(dis, () ->
-                            {
-                                experiences.add(new Organization.Experience(readYearMonth(dis), readYearMonth(dis), dis.readUTF(), dis.readUTF()));
-                            });
+                                    experiences.add(new Organization.Experience(readYearMonth(dis), readYearMonth(dis), dis.readUTF(), dis.readUTF())));
                             organizationList.add(new Organization(name, new Link(name, link), experiences));
                         });
                         resume.getSections().put(sectionType, new OrganizationSection(organizationList));
