@@ -1,10 +1,11 @@
 package com.urise.webapp;
 
-import com.urise.webapp.model.*;
+import com.urise.webapp.model.Link;
+import com.urise.webapp.model.Organization;
+import com.urise.webapp.model.Resume;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeTestData {
@@ -49,7 +50,7 @@ public class ResumeTestData {
     public static Resume fillResume(String uuid, String fullName) {
         Resume testResume = new Resume(uuid, fullName);
 
-        List<Organization> educationContent = new ArrayList<>();
+      /*  List<Organization> educationContent = new ArrayList<>();
         fillOrganizationSection("Coursera\n" + "https://www.coursera.org/learn/progfun1\n" +
                 "03/2013-05/2013 Слушатель\n" + "Functional Programming Principles in Scala\" by Martin Odersky\n" +
                 "Luxoft\n" + "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366\n" +
@@ -133,7 +134,7 @@ public class ResumeTestData {
         testResume.getSections().put(SectionType.EDUCATION, new OrganizationSection(educationContent));
 
         testResume.getSections().put(SectionType.EXPERIENCE, new OrganizationSection(experienceContent));
-
+*/
         return testResume;
     }
 }
