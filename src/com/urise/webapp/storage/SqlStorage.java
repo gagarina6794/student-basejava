@@ -7,6 +7,7 @@ import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.ConnectionFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 interface Executable<T> {
@@ -78,19 +79,7 @@ public class SqlStorage implements Storage {
         } catch (Exception e) {
             throw new NotExistStorageException(e.getMessage());
         }
-       /* try {
-            ResultSet resultSet = executeWithExceptionForResultSet(new StorageException("this resume doesn't exist in storage"),
-                    "SELECT * FROM resume r WHERE r.uuid =?", ps -> {
-                        ps.setString(1, uuid);
-                        ResultSet rs = ps.executeQuery();
-                        if (isExecuted(rs, uuid)) {
-                            return rs;
-                        } else throw new NotExistStorageException(uuid);
-                    });
-            return new Resume(uuid, resultSet.getString("full_name"));
-        } catch (Exception e) {
-            throw new StorageException(e);
-        }*/
+
     }
 
     @Override
@@ -109,7 +98,23 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return null;
+        try {
+            return new ExecutionQuery<List<Resume>>().executeWithExceptionForResultSet(connectionFactory, new StorageException("storage is empty"),
+                    "SELECT * FROM resume ORDER BY full_name",
+                    ps -> {
+                        ResultSet rs = ps.executeQuery();
+                        if (! rs.next()) {
+                            new StorageException("storage is empty");
+                        }
+                        List<Resume> resumesList = new ArrayList<>();
+                        do{
+                            resumesList.add(new Resume(rs.getString("uuid").trim(), rs.getString( "full_name")));
+                        }while (rs.next());
+                        return resumesList;
+                    });
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
     }
 
     @Override
