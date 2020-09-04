@@ -24,13 +24,16 @@ public class SqlStorage implements Storage {
     @Override
     public void update(Resume resume) {
         try {
-            new ExecutionQuery<Object>().executeWithExceptionForResultSet(connectionFactory,new NotExistStorageException("this resume doesn't exist"),
+            new ExecutionQuery<Object>().executeWithExceptionForResultSet(connectionFactory, new NotExistStorageException("this resume doesn't exist"),
                     "update resume set full_name = ? where uuid = ?", ps -> {
-                ps.setString(2, resume.getUuid());
-                ps.setString(1, resume.getFullName());
-                ps.execute();
-                return null;
-            });
+                        ps.setString(2, resume.getUuid());
+                        ps.setString(1, resume.getFullName());
+                        ps.execute();
+                        if (ps.executeUpdate() == 0) {
+                            throw new NotExistStorageException("this resume doesn't exist");
+                        }
+                        return null;
+                    });
         } catch (Exception e) {
             throw new NotExistStorageException(e.getMessage());
         }
@@ -39,7 +42,7 @@ public class SqlStorage implements Storage {
     @Override
     public void clear() {
         try {
-            new ExecutionQuery<Object>().executeWithExceptionForResultSet(connectionFactory,new SQLException("smth wrong with connection"), "DELETE FROM resume", ps -> {
+            new ExecutionQuery<Object>().executeWithExceptionForResultSet(connectionFactory, new SQLException("smth wrong with connection"), "DELETE FROM resume", ps -> {
                 ps.execute();
                 return null;
             });
@@ -67,11 +70,11 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         try {
-            return new ExecutionQuery<Resume>().executeWithExceptionForResultSet(connectionFactory,new NotExistStorageException("this resume doesn't exist in storage"),
+            return new ExecutionQuery<Resume>().executeWithExceptionForResultSet(connectionFactory, new NotExistStorageException("this resume doesn't exist in storage"),
                     "SELECT * FROM resume r WHERE r.uuid =?", ps -> {
                         ps.setString(1, uuid);
                         ResultSet rs = ps.executeQuery();
-                        if (! rs.next()) {
+                        if (!rs.next()) {
                             throw new NotExistStorageException(uuid);
                         }
                         return new Resume(uuid, rs.getString("full_name"));
@@ -85,12 +88,15 @@ public class SqlStorage implements Storage {
     @Override
     public void delete(String uuid) {
         try {
-            new ExecutionQuery<Object>().executeWithExceptionForResultSet(connectionFactory,new NotExistStorageException("this resume doesn't exist"),
+            new ExecutionQuery<Object>().executeWithExceptionForResultSet(connectionFactory, new NotExistStorageException("this resume doesn't exist"),
                     "delete from resume where uuid = ?", ps -> {
-                ps.setString(1, uuid);
-                ps.execute();
-                return null;
-            });
+                        ps.setString(1, uuid);
+                        ps.execute();
+                        if (ps.executeUpdate() == 0) {
+                            throw new NotExistStorageException("this resume doesn't exist");
+                        }
+                        return null;
+                    });
         } catch (Exception e) {
             throw new NotExistStorageException(e.getMessage());
         }
@@ -103,13 +109,13 @@ public class SqlStorage implements Storage {
                     "SELECT * FROM resume ORDER BY full_name",
                     ps -> {
                         ResultSet rs = ps.executeQuery();
-                        if (! rs.next()) {
+                        if (!rs.next()) {
                             new StorageException("storage is empty");
                         }
                         List<Resume> resumesList = new ArrayList<>();
-                        do{
-                            resumesList.add(new Resume(rs.getString("uuid").trim(), rs.getString( "full_name")));
-                        }while (rs.next());
+                        do {
+                            resumesList.add(new Resume(rs.getString("uuid").trim(), rs.getString("full_name")));
+                        } while (rs.next());
                         return resumesList;
                     });
         } catch (Exception e) {
@@ -124,7 +130,7 @@ public class SqlStorage implements Storage {
                     "SELECT COUNT(*) FROM resume",
                     ps -> {
                         ResultSet rs = ps.executeQuery();
-                        if (! rs.next()) {
+                        if (!rs.next()) {
                             new StorageException("storage is empty");
                         }
                         return rs.getInt(1);
@@ -132,10 +138,6 @@ public class SqlStorage implements Storage {
         } catch (Exception e) {
             throw new StorageException(e);
         }
-    }
-
-    private boolean isExecuted(ResultSet rs, String uuid) throws SQLException {
-        return rs.next();
     }
 }
 
