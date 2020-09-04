@@ -16,10 +16,10 @@ public class DeadLock {
 
     private static void runLock(Object lock1, Object lock2, String threadID){
         synchronized (lock1){
-            System.out.println(threadID + " поток держит lock: " + lock1.toString());
-            System.out.println(threadID + " поток ждет lock: " + lock2.toString());
+            System.out.println(threadID + " поток держит lock: " + lock1);
+            System.out.println(threadID + " поток ждет lock: " + lock2);
             synchronized (lock2){
-                System.out.println(threadID + " поток держит lock: " + lock2.toString());
+                System.out.println(threadID + " поток держит lock: " + lock2);
             }
         }
     }
