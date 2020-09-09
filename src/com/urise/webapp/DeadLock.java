@@ -5,10 +5,8 @@ public class DeadLock {
     public static Object LOCK2 = new Object();
 
     public static void main(String[] args) throws InterruptedException {
-        Thread thread1 = new Thread(() -> runLock(LOCK1, LOCK2, Thread.currentThread().getName()));
-        Thread thread2 = new Thread(() -> runLock(LOCK2, LOCK1, Thread.currentThread().getName()));
-        thread1.start();
-        thread2.start();
+        new Thread(() -> runLock(LOCK1, LOCK2, Thread.currentThread().getName())).start();
+       new Thread(() -> runLock(LOCK2, LOCK1, Thread.currentThread().getName())).start();
     }
 
     private static void runLock(Object lock1, Object lock2, String threadID) {
