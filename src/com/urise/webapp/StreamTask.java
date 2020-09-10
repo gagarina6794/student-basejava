@@ -8,8 +8,8 @@ import java.util.stream.IntStream;
 
 public class StreamTask {
     public static void main(String[] args) {
+        System.out.println(minValue(new int[]{1, 2, 5, 6, 6, 5, 3, 4}));
 
-        System.out.println(minValue(new int[]{9,8}));
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             list.add(i);
@@ -22,21 +22,12 @@ public class StreamTask {
     static int minValue(int[] values) {
         Integer[] arrayInteger = IntStream.of(values).boxed().toArray(Integer[]::new);
         var collection = Arrays.stream(arrayInteger);
-        var resultArray = Arrays.stream(collection.distinct().sorted().toArray()).mapToInt(i -> (int) i).toArray();
-        int sum = 0;
-        for (int value : resultArray) {
-            sum *= 10;
-            sum += value;
-        }
-        return sum;
+        return Arrays.stream(Arrays.stream(collection.distinct().sorted().toArray()).mapToInt(i -> (int) i).toArray())
+                .reduce((left, right) ->left * 10 + right).getAsInt();
     }
 
     static List<Integer> oddOrEven(List<Integer> integers) {
         int sum = integers.stream().mapToInt(Integer::intValue).sum();
-        if (sum % 2 == 0) {
-            return integers.stream().filter(o -> o % 2 == 0).collect(Collectors.toList());
-        } else {
-            return integers.stream().filter(o -> o % 2 != 0).collect(Collectors.toList());
-        }
+        return integers.stream().filter(o -> o % 2 == sum % 2).collect(Collectors.toList());
     }
 }
