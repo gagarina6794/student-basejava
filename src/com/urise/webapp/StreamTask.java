@@ -22,12 +22,12 @@ public class StreamTask {
     static int minValue(int[] values) {
         Integer[] arrayInteger = IntStream.of(values).boxed().toArray(Integer[]::new);
         var collection = Arrays.stream(arrayInteger);
-        return Arrays.stream(Arrays.stream(collection.distinct().sorted().toArray()).mapToInt(i -> (int) i).toArray())
-                .reduce((left, right) ->left * 10 + right).getAsInt();
+        return Arrays.stream(collection.distinct().sorted().toArray()).mapToInt(i -> (int) i)
+                .reduce(0,(left, right) ->left * 10 + right);
     }
 
     static List<Integer> oddOrEven(List<Integer> integers) {
         int sum = integers.stream().mapToInt(Integer::intValue).sum();
-        return integers.stream().filter(o -> o % 2 == sum % 2).collect(Collectors.toList());
+        return integers.stream().filter(o -> o % 2 != sum % 2).collect(Collectors.toList());
     }
 }
