@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class StreamTask {
     public static void main(String[] args) {
@@ -20,9 +19,7 @@ public class StreamTask {
     }
 
     static int minValue(int[] values) {
-        Integer[] arrayInteger = IntStream.of(values).boxed().toArray(Integer[]::new);
-        var collection = Arrays.stream(arrayInteger);
-        return Arrays.stream(collection.distinct().sorted().toArray()).mapToInt(i -> (int) i)
+        return Arrays.stream(values).distinct().sorted()
                 .reduce(0,(left, right) ->left * 10 + right);
     }
 
