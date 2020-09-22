@@ -63,7 +63,6 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-
         sqlHelper.executeWithException("delete from resume where uuid = ?", ps -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
@@ -83,7 +82,7 @@ public class SqlStorage implements Storage {
                     }
                     List<Resume> resumesList = new ArrayList<>();
                     do {
-                        resumesList.add(ResumeTestData.fillResume(rs.getString("uuid"),rs.getString("full_name")));
+                        resumesList.add(ResumeTestData.fillResume(rs.getString("uuid"), rs.getString("full_name")));
                     } while (rs.next());
                     return resumesList;
                 });
@@ -94,9 +93,7 @@ public class SqlStorage implements Storage {
         return sqlHelper.executeWithException("SELECT COUNT(*) FROM resume",
                 ps -> {
                     ResultSet rs = ps.executeQuery();
-                    if (!rs.next()) {
-                        throw new StorageException("storage is empty");
-                    }
+                    rs.next();
                     return rs.getInt(1);
                 });
     }

@@ -39,9 +39,9 @@ public class ResumeTestData {
             data.delete(0, data.indexOf("\n") + 1);
             Organization newItem = new Organization(organization, new Link(organization, link));
             if (content.contains(newItem)) {
-                content.get(content.indexOf(newItem)).addExperience(new Organization.Experience(date1, date2,title, info));
+                content.get(content.indexOf(newItem)).addExperience(new Organization.Experience(date1, date2, title, info));
             } else {
-                newItem.addExperience(new Organization.Experience(date1, date2,title, info));
+                newItem.addExperience(new Organization.Experience(date1, date2, title, info));
                 content.add(newItem);
             }
         }
@@ -49,7 +49,6 @@ public class ResumeTestData {
 
     public static Resume fillResume(String uuid, String fullName) {
         Resume testResume = new Resume(uuid.trim(), fullName);
-
       /*  List<Organization> educationContent = new ArrayList<>();
         fillOrganizationSection("Coursera\n" + "https://www.coursera.org/learn/progfun1\n" +
                 "03/2013-05/2013 Слушатель\n" + "Functional Programming Principles in Scala\" by Martin Odersky\n" +
