@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
@@ -25,7 +26,6 @@ public class SqlStorage implements Storage {
                 "update resume set full_name = ? where uuid = ?", ps -> {
                     ps.setString(2, resume.getUuid());
                     ps.setString(1, resume.getFullName());
-                    ps.execute();
                     if (ps.executeUpdate() == 0) {
                         throw new NotExistStorageException("this resume doesn't exist");
                     }
@@ -51,18 +51,14 @@ public class SqlStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        try {
-            return sqlHelper.executeWithException("SELECT * FROM resume r WHERE r.uuid =?", ps -> {
-                ps.setString(1, uuid);
-                ResultSet rs = ps.executeQuery();
-                if (!rs.next()) {
-                    throw new NotExistStorageException(uuid);
-                }
-                return new Resume(uuid, rs.getString("full_name"));
-            });
-        } catch (Exception e) {
-            throw new NotExistStorageException(e.getMessage());
-        }
+        return sqlHelper.executeWithException("SELECT * FROM resume r WHERE r.uuid =?", ps -> {
+            ps.setString(1, uuid);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                throw new NotExistStorageException(uuid);
+            }
+            return new Resume(uuid, rs.getString("full_name"));
+        });
     }
 
     @Override
@@ -70,7 +66,6 @@ public class SqlStorage implements Storage {
 
         sqlHelper.executeWithException("delete from resume where uuid = ?", ps -> {
             ps.setString(1, uuid);
-            ps.execute();
             if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException("this resume doesn't exist");
             }
@@ -80,7 +75,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.executeWithException("SELECT * FROM resume ORDER BY full_name",
+        return sqlHelper.executeWithException("SELECT * FROM resume ORDER BY full_name,uuid ",
                 ps -> {
                     ResultSet rs = ps.executeQuery();
                     if (!rs.next()) {
@@ -88,7 +83,7 @@ public class SqlStorage implements Storage {
                     }
                     List<Resume> resumesList = new ArrayList<>();
                     do {
-                        resumesList.add(new Resume(rs.getString("uuid").trim(), rs.getString("full_name")));
+                        resumesList.add(ResumeTestData.fillResume(rs.getString("uuid"),rs.getString("full_name")));
                     } while (rs.next());
                     return resumesList;
                 });

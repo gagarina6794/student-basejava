@@ -20,7 +20,7 @@ public class SqlHelper {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.execute();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             initException(e);
         }
     }
@@ -29,20 +29,18 @@ public class SqlHelper {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             return executable.executeQuery(ps);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             initException(e);
         }
         return null;
     }
 
-    void initException(Exception e) {
+    void initException(SQLException e) {
         if (e instanceof SQLException) {
-            if (((SQLException) e).getSQLState().equals("23505")) {
+            if (e.getSQLState().equals("23505")) {
                 throw new ExistStorageException(null);
             }
-        }
-        if (e instanceof NotExistStorageException)//костыль
-            throw new NotExistStorageException(null);
-        throw new StorageException(e);
+        } else throw new NotExistStorageException(null);
+        //  throw new StorageException(e);
     }
 }
