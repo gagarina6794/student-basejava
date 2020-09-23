@@ -48,7 +48,7 @@ public class ResumeTestData {
     }
 
     public static Resume fillResume(String uuid, String fullName) {
-        Resume testResume = new Resume(uuid.trim(), fullName);
+        Resume testResume = new Resume(uuid, fullName);
       /*  List<Organization> educationContent = new ArrayList<>();
         fillOrganizationSection("Coursera\n" + "https://www.coursera.org/learn/progfun1\n" +
                 "03/2013-05/2013 Слушатель\n" + "Functional Programming Principles in Scala\" by Martin Odersky\n" +
