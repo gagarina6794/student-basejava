@@ -27,7 +27,7 @@ public class SqlStorage implements Storage {
                     ps.setString(2, resume.getUuid());
                     ps.setString(1, resume.getFullName());
                     if (ps.executeUpdate() == 0) {
-                        throw new NotExistStorageException("this resume doesn't exist");
+                        throw new NotExistStorageException(resume.getUuid() + " resume doesn't exist");
                     }
                     return null;
                 });
