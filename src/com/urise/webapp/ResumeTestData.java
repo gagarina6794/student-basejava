@@ -1,5 +1,6 @@
 package com.urise.webapp;
 
+import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Link;
 import com.urise.webapp.model.Organization;
 import com.urise.webapp.model.Resume;
@@ -116,11 +117,7 @@ public class ResumeTestData {
                 "Отличное знание и опыт применения концепций ООП, SOA, шаблонов проектрирования, архитектурных шаблонов, UML, функционального программирования\n" +
                 "Родной русский, английский \"upper intermediate\"\n", qualificationContent);
 
-        testResume.getContacts().put(ContactType.EMAIL, "gkisilin@yandex.ru");
-        testResume.getContacts().put(ContactType.GITHUB, "https://github.com/gkislin");
-        testResume.getContacts().put(ContactType.SKYPE, "grigory.kislin");
-        testResume.getContacts().put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
-        testResume.getContacts().put(ContactType.MOBILEPHONE, "+7(921) 855-0482");
+
 
         testResume.getSections().put(SectionType.ACHIEVEMENTS, new BulletedListSection(achievementsContent));
 
@@ -134,6 +131,11 @@ public class ResumeTestData {
 
         testResume.getSections().put(SectionType.EXPERIENCE, new OrganizationSection(experienceContent));
 */
+        testResume.getContacts().put(ContactType.EMAIL, "gkisilin@yandex.ru");
+        testResume.getContacts().put(ContactType.GITHUB, "https://github.com/gkislin");
+        testResume.getContacts().put(ContactType.SKYPE, "grigory.kislin");
+        testResume.getContacts().put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
+        testResume.getContacts().put(ContactType.MOBILEPHONE, "+7(921) 855-0482");
         return testResume;
     }
 }

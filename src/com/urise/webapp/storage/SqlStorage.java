@@ -4,13 +4,16 @@ import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
+import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.ConnectionFactory;
 import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class SqlStorage implements Storage {
@@ -22,15 +25,25 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        sqlHelper.executeWithException(
-                "update resume set full_name = ? where uuid = ?", ps -> {
-                    ps.setString(2, resume.getUuid());
-                    ps.setString(1, resume.getFullName());
-                    if (ps.executeUpdate() == 0) {
-                        throw new NotExistStorageException(resume.getUuid() + " resume doesn't exist");
-                    }
-                    return null;
-                });
+        sqlHelper.transactionExecute(connection -> {
+            try (PreparedStatement ps = connection.prepareStatement("update resume set full_name = ? where uuid = ?")) {
+                ps.setString(2, resume.getUuid());
+                ps.setString(1, resume.getFullName());
+                if (ps.executeUpdate() == 0) {
+                    throw new NotExistStorageException(resume.getUuid() + " resume doesn't exist");
+                }
+            }
+            try (PreparedStatement ps = connection.prepareStatement("update contact set type =? ,value =?  where resume_uuid =?")) {
+                for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
+                    ps.setString(1, e.getKey().name());
+                    ps.setString(2, e.getValue());
+                    ps.setString(3, resume.getUuid());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+            return null;
+        });
     }
 
     @Override
@@ -40,24 +53,40 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        sqlHelper.executeWithException("INSERT INTO resume (uuid, full_name) VALUES (?,?)",
-                ps -> {
+        sqlHelper.transactionExecute(connection -> {
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
+                ps.setString(1, resume.getUuid());
+                ps.setString(2, resume.getFullName());
+                ps.execute();
+            }
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO contact (resume_uuid,type,value) VALUES (?,?,?)")) {
+                for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
                     ps.setString(1, resume.getUuid());
-                    ps.setString(2, resume.getFullName());
-                    ps.execute();
-                    return null;
-                });
+                    ps.setString(2, e.getKey().name());
+                    ps.setString(3, e.getValue());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+            return null;
+        });
     }
 
     @Override
     public Resume get(String uuid) {
-        return sqlHelper.executeWithException("SELECT * FROM resume r WHERE r.uuid =?", ps -> {
+        return sqlHelper.executeWithException("SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid WHERE r.uuid =?", ps -> {
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 throw new NotExistStorageException(uuid);
             }
-            return new Resume(uuid, rs.getString("full_name"));
+            Resume resume = new Resume(uuid, rs.getString("full_name"));
+            do {
+                String value = rs.getString("value");
+                ContactType type = ContactType.valueOf(rs.getString("type"));
+                resume.addContacts(type, value);
+            } while (rs.next());
+            return resume;
         });
     }
 
@@ -74,15 +103,29 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.executeWithException("SELECT * FROM resume ORDER BY full_name,uuid ",
+        return sqlHelper.executeWithException("SELECT * FROM resume r ORDER BY full_name,uuid ",
                 ps -> {
                     ResultSet rs = ps.executeQuery();
                     if (!rs.next()) {
                         throw new StorageException("storage is empty");
                     }
                     List<Resume> resumesList = new ArrayList<>();
+                    //SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid ORDER BY full_name,uuid
+
                     do {
-                        resumesList.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
+                        PreparedStatement sp = sqlHelper.connectionFactory.getConnection().prepareStatement("SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid WHERE c.resume_uuid =?");
+                        String uuid = rs.getString("uuid");
+                        sp.setString(1, uuid);
+                        ResultSet ss = sp.executeQuery();
+                        Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+                        if (ss.next()) {
+                            do {
+                                contacts.put(ContactType.valueOf(ss.getString("type")), ss.getString("value"));
+                            } while (ss.next());
+                        }
+                        Resume resume = new Resume(uuid, rs.getString("full_name"));
+                        resume.setContacts(contacts);
+                        resumesList.add(resume);
                     } while (rs.next());
                     return resumesList;
                 });

@@ -17,6 +17,23 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
+    public <T> T transactionExecute(SqlTransaction<T> executor){
+        try(Connection connection = connectionFactory.getConnection()) {
+            try{
+                connection.setAutoCommit(false);
+                T result = executor.execute(connection);
+                connection.commit();
+                return result;
+            }catch (SQLException e){
+                connection.rollback();
+                initException(e);
+            }
+        }catch (SQLException e){
+            throw new StorageException(e);
+        }
+        return null;
+    }
+
     public void executeWithException(String query) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
