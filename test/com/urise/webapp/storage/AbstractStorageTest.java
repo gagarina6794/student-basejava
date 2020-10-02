@@ -22,9 +22,9 @@ public abstract class AbstractStorageTest {
     private static final String UUID_2 = UUID.randomUUID().toString();
     private static final String UUID_3 = UUID.randomUUID().toString();
 
-    private static final Resume RESUME1 = ResumeTestData.fillResume(UUID_1,"Abr");
-    private static final Resume RESUME2 = ResumeTestData.fillResume(UUID_2,"Bro");
-    private static final Resume RESUME3 = ResumeTestData.fillResume(UUID_3,"Abron");
+    private static final Resume RESUME1 = new Resume(UUID_1,"Abr");
+    private static final Resume RESUME2 = new Resume(UUID_2,"Bro");
+    private static final Resume RESUME3 = new Resume(UUID_3,"Abron");
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -64,7 +64,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() throws Exception {
-        Resume newResume = ResumeTestData.fillResume(UUID_1,"Abr");
+       Resume newResume = ResumeTestData.fillResume(UUID_1,"Abr");
         storage.update(newResume);
         Assert.assertEquals(newResume, storage.get(UUID_1));
     }
@@ -76,7 +76,8 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void save() throws Exception {
-        Resume newResume = ResumeTestData.fillResume("uuid4","Abr");;
+        //Resume newResume = ResumeTestData.fillResume("uuid4","Abr");
+        Resume newResume = new Resume("uuid4","Abr");
         storage.save(newResume);
         Assert.assertEquals(newResume, storage.get("uuid4"));
         Assert.assertTrue(isEqualSize(4));
