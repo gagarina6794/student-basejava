@@ -30,11 +30,9 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(resume.getUuid() + " resume doesn't exist");
                 }
             }
-
-            sqlHelper.executeWithException("delete from contact where resume_uuid = ?", ps -> {
+            try (PreparedStatement ps = connection.prepareStatement("delete from contact where resume_uuid = ?")){
                 ps.setString(1, resume.getUuid());
-                return null;
-            });
+            }
             insertInContact(resume);
             return null;
         });
@@ -73,7 +71,7 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private void insertInContact(Resume resume){
+    private void insertInContact(Resume resume) {
         if (resume.getContacts().size() != 0) {
             sqlHelper.executeWithException("INSERT INTO contact (resume_uuid,type,value) VALUES (?,?,?)", ps -> {
                 for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
@@ -139,7 +137,7 @@ public class SqlStorage implements Storage {
         return sqlHelper.transactionExecute(connection -> {
             List<Resume> resumesList = new ArrayList<>();
             Map<String, Resume> resumesMap = new HashMap<>();
-            sqlHelper.executeWithException("SELECT * FROM resume r ORDER BY full_name,uuid", ps -> {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM resume r ORDER BY full_name,uuid")) {
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
                     throw new StorageException("storage is empty");
@@ -151,10 +149,8 @@ public class SqlStorage implements Storage {
                         resumesList.add(resumesMap.get(uuid));
                     }
                 } while (rs.next());
-                return null;
-            });
-
-            sqlHelper.executeWithException("SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid ORDER BY r.full_name,r.uuid ", ps -> {
+            }
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid ORDER BY r.full_name,r.uuid")) {
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
                     throw new StorageException("storage is empty");
@@ -167,8 +163,8 @@ public class SqlStorage implements Storage {
                         resumesMap.get(uuid).getContacts().put(ContactType.valueOf(type), value);
                     }
                 } while (rs.next());
-                return null;
-            });
+
+            }
             return resumesList;
         });
        /* return sqlHelper.executeWithException("SELECT * FROM resume r ORDER BY full_name,uuid ",
