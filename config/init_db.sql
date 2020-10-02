@@ -18,3 +18,5 @@ CREATE UNIQUE INDEX contact_uuid_type_index
 
 DROP TABLE resume;
 DROP TABLE contact;
+
+SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid ORDER BY r.full_name,c.resume_uuid

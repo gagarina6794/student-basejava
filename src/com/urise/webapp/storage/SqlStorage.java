@@ -10,10 +10,7 @@ import com.urise.webapp.sql.ConnectionFactory;
 import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class SqlStorage implements Storage {
@@ -52,7 +49,7 @@ public class SqlStorage implements Storage {
             }
             return null;
         });
-}
+    }
 
     @Override
     public void clear() {
@@ -145,7 +142,42 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.executeWithException("SELECT * FROM resume r ORDER BY full_name,uuid ",
+        return sqlHelper.transactionExecute(connection -> {
+            List<Resume> resumesList = new ArrayList<>();
+            Map<String, Resume> resumesMap = new HashMap<>();
+            sqlHelper.executeWithException("SELECT * FROM resume r ORDER BY full_name,uuid", ps -> {
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new StorageException("storage is empty");
+                }
+                do {
+                    String uuid = rs.getString("uuid");
+                    if (!resumesMap.containsKey(uuid)) {
+                        resumesMap.put(uuid, new Resume(uuid, rs.getString("full_name")));
+                        resumesList.add(resumesMap.get(uuid));
+                    }
+                } while (rs.next());
+                return null;
+            });
+
+            sqlHelper.executeWithException("SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid ORDER BY r.full_name,r.uuid ", ps -> {
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new StorageException("storage is empty");
+                }
+                String uuid = rs.getString("uuid");
+                do {
+                    String type = rs.getString("type");
+                    String value = rs.getString("value");
+                    if (type != null && value != null) {
+                        resumesMap.get(uuid).getContacts().put(ContactType.valueOf(type), value);
+                    }
+                } while (rs.next());
+                return null;
+            });
+            return resumesList;
+        });
+       /* return sqlHelper.executeWithException("SELECT * FROM resume r ORDER BY full_name,uuid ",
                 ps -> {
                     ResultSet rs = ps.executeQuery();
                     if (!rs.next()) {
@@ -168,7 +200,33 @@ public class SqlStorage implements Storage {
                         resumesList.add(resume);
                     } while (rs.next());
                     return resumesList;
-                });
+                });*/
+      /*  return sqlHelper.executeWithException(//"SELECT * FROM resume r ORDER BY full_name,uuid ",
+                "SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid ORDER BY r.full_name,r.uuid ", ps -> {
+                    ResultSet rs = ps.executeQuery();
+                    if (!rs.next()) {
+                        throw new StorageException("storage is empty");
+                    }
+                    List<Resume> resumesList = new ArrayList<>();
+                    Map<String, Resume> resumesMap = new HashMap<>();
+                    Resume resume = null;
+                    do {
+                        String uuid = rs.getString("uuid");
+                        if (!resumesMap.containsKey(uuid)) {
+                            resume = new Resume(uuid, rs.getString("full_name"));
+                            resumesMap.put(uuid, resume);
+                        }
+                        // PreparedStatement sp = sqlHelper.connectionFactory.getConnection().prepareStatement("SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid WHERE c.resume_uuid =?");
+                        //String uuid = rs.getString("uuid");
+                        //sp.setString(1, uuid);
+                        // ResultSet ss = sp.executeQuery();
+                        // Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+                        resumesMap.get(uuid).getContacts().put(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
+                       // resume.setContacts( resumesMap.get(uuid));
+                        resumesList.add(resume);
+                    } while (rs.next());
+                    return resumesList;
+                });*/
     }
 
     @Override
