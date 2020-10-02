@@ -159,8 +159,8 @@ public class SqlStorage implements Storage {
                 if (!rs.next()) {
                     throw new StorageException("storage is empty");
                 }
-                String uuid = rs.getString("uuid");
                 do {
+                    String uuid = rs.getString("uuid");
                     String type = rs.getString("type");
                     String value = rs.getString("value");
                     if (type != null && value != null) {
