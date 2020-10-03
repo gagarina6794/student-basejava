@@ -20,12 +20,12 @@ public class SqlStorage implements Storage {
     @Override
     public void update(Resume resume) {
         sqlHelper.transactionExecute(connection -> {
-            try (PreparedStatement ps = connection.prepareStatement("update resume set full_name = ? where uuid = ?")) {
+            try (PreparedStatement ps = connection.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")) {
                 ps.setString(2, resume.getUuid());
                 ps.setString(1, resume.getFullName());
                 executeUpdateWithCheck(ps,resume.getUuid());
             }
-            try (PreparedStatement ps = connection.prepareStatement("delete from contact where resume_uuid = ?")){
+            try (PreparedStatement ps = connection.prepareStatement("DELETE FROMcontact WHERE resume_uuid = ?")){
                 ps.setString(1, resume.getUuid());
             }
             insertInContact(resume,connection);
@@ -76,7 +76,7 @@ public class SqlStorage implements Storage {
     @Override
     public void delete(String uuid) {
         sqlHelper.transactionExecute(connection -> {
-            try(PreparedStatement ps = connection.prepareStatement("delete from resume where uuid = ?")){
+            try(PreparedStatement ps = connection.prepareStatement("DELETE FROM resume WHERE uuid = ?")){
                 ps.setString(1, uuid);
                 executeUpdateWithCheck(ps,uuid);
                 return null;
