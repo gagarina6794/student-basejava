@@ -1,12 +1,10 @@
 package com.urise.webapp;
 
-import com.urise.webapp.model.ContactType;
-import com.urise.webapp.model.Link;
-import com.urise.webapp.model.Organization;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeTestData {
@@ -91,7 +89,10 @@ public class ResumeTestData {
                 "Alcatel\n" + "http://www.alcatel.ru/\n" +
                 "09/1997-01/2005 Инженер по аппаратному и программному тестированию\n" +
                 "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM).\n", experienceContent);
+        testResume.getSections().put(SectionType.EDUCATION, new OrganizationSection(educationContent));
 
+        testResume.getSections().put(SectionType.EXPERIENCE, new OrganizationSection(experienceContent));
+*/
         List<String> achievementsContent = new ArrayList<>();
         fillBulltedListSection("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.\n" +
                 "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.\n" +
@@ -127,10 +128,7 @@ public class ResumeTestData {
 
         testResume.getSections().put(SectionType.PERSONAL, new SimpleTextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
 
-        testResume.getSections().put(SectionType.EDUCATION, new OrganizationSection(educationContent));
 
-        testResume.getSections().put(SectionType.EXPERIENCE, new OrganizationSection(experienceContent));
-*/
         testResume.getContacts().put(ContactType.EMAIL, "gkisilin@yandex.ru");
         testResume.getContacts().put(ContactType.GITHUB, "https://github.com/gkislin");
         testResume.getContacts().put(ContactType.SKYPE, "grigory.kislin");
