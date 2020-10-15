@@ -34,44 +34,16 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
-        String uuid = request.getParameter("uuid");
+        response.getWriter().write("<link rel=\"stylesheet\" type =\"text/css\" href=\"css/style.css\"/>");
 
-        if (uuid == null) {
-            response.getWriter().write("");
-        } else {
-            Resume resume = storage.get(uuid);
-            response.getWriter().write("<table border=\"1\"><tr><th>Name: "  + "</th><td>" +  resume.getFullName() + "</td></tr>");
-            response.getWriter().write("<tr><th>Uuid: "  + "</th><td>" +  uuid + "</td></tr></table>");
-           /* response.getWriter().write("<br>" + "Contacts: ");
-            response.getWriter().write("<br>" + "<ul>");
-            for (var item : resume.getContacts().entrySet()) {
-                response.getWriter().write("<li>" + item.getKey().toString() + ": " + item.getValue() + "</li>");
-            }
-            response.getWriter().write("</ul>");
-            response.getWriter().write("Sections: ");
-            response.getWriter().write("<ul>");
-            for (var entry : resume.getSections().entrySet()) {
-                SectionType sectionType = entry.getKey();
-                switch (sectionType) {
-                    case ACHIEVEMENTS:
-                    case QUALIFICATION:
-                        response.getWriter().write("<br><li>" + sectionType + ": " + "</li>");
-                        response.getWriter().write("<ul>");
+        response.getWriter().write("<table border=\"1\"><tr><th>Uuid: " + "</th>");
+        response.getWriter().write("<th>Name: " + "</th></tr>");
 
-                        for (var elem : ((BulletedListSection) entry.getValue()).getContent()) {
-
-                            response.getWriter().write("<li>" + elem + "</li>");
-                        }
-                        response.getWriter().write("</ul>");
-                        break;
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        response.getWriter().write("<br><li>" + sectionType + ": " + "</li>");
-                        response.getWriter().write(entry.getValue().toString());
-                        break;
-                }
-            }*/
-           // response.getWriter().write("</ul>");
+        for (Resume resume : storage.getAllSorted()) {
+            response.getWriter().write("<tr><td>" + resume.getUuid() + "</td>");
+            response.getWriter().write("<td>" + resume.getFullName() + "</td></tr>");
         }
+        response.getWriter().write("</table>");
+
     }
 }
