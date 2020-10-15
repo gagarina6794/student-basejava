@@ -80,11 +80,7 @@ public class SqlStorage implements Storage {
                         case ACHIEVEMENTS:
                         case QUALIFICATION:
                             List<String> contentList = new ArrayList<>();
-                            StringBuilder information = new StringBuilder(rs.getString("information"));
-                            while (information.length() > 0) {
-                                contentList.add(information.substring(0, information.indexOf("\n")));
-                                information.delete(0, information.indexOf("\n") + 1);
-                            }
+                            Arrays.stream(rs.getString("information").split("\n")).forEach((item) ->contentList.add(item));
                             resume.getSections().put(section, new BulletedListSection(contentList));
                             break;
                         case OBJECTIVE:
@@ -118,21 +114,20 @@ public class SqlStorage implements Storage {
             Map<String, Resume> resumesMap = new LinkedHashMap<>();
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM resume r ORDER BY r.full_name,r.uuid")) {
                 ResultSet rs = ps.executeQuery();
-                if (!rs.next()) {
-                    throw new StorageException("storage is empty");
-                }
-                do {
+                while (rs.next()){
                     String uuid = rs.getString("uuid");
                     if (!resumesMap.containsKey(uuid)) {
-                        resumesMap.put(uuid, new Resume(uuid, rs.getString("full_name")));
+                       // resumesMap.put(uuid, new Resume(uuid, rs.getString("full_name")));
+                        resumesMap.put(uuid, get(uuid));
                     }
                 }
-                while (rs.next());
             }
+            /*
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM contact ")) {
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
                     throw new StorageException("storage is empty");
+
                 }
                 do {
                     String type = rs.getString("type");
@@ -174,7 +169,7 @@ public class SqlStorage implements Storage {
                         }
                     }
                 } while (rs.next());
-            }
+            }*/
             return new ArrayList<>(resumesMap.values());
         });
     }
@@ -211,13 +206,14 @@ public class SqlStorage implements Storage {
                 switch (entry.getKey()) {
                     case ACHIEVEMENTS:
                     case QUALIFICATION:
-                        StringBuilder information = new StringBuilder();
+                        /*StringBuilder information = new StringBuilder();
                         for (var item : ((BulletedListSection) entry.getValue()).getContent()) {
                             information.append(item + "\n");
-                        }
+                        }*/
+                        String information = String.join("\n",((BulletedListSection) entry.getValue()).getContent());
                         ps.setString(1, resume.getUuid());
                         ps.setString(2, entry.getKey().toString());
-                        ps.setString(3, information.toString());
+                        ps.setString(3, information);
                         ps.addBatch();
                         break;
                     case OBJECTIVE:

@@ -12,3 +12,12 @@ footer {
     padding: 5px 20px;
     margin: 20px 0;
 }
+
+table, th, td {
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+}
