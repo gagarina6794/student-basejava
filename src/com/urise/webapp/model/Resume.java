@@ -53,6 +53,14 @@ public class Resume implements Comparable<Resume>, Serializable {
         this.sections = sections;
     }
 
+    public String getContacts(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public Section getSections(SectionType type) {
+        return sections.get(type);
+    }
+
     public String getUuid() {
         return uuid;
     }
