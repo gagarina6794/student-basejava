@@ -20,16 +20,18 @@ public class SqlStorage implements Storage {
     @Override
     public void update(Resume resume) {
         sqlHelper.transactionExecute(connection -> {
-            try (PreparedStatement ps = connection.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")) {
+            try (PreparedStatement ps = connection.prepareStatement("UPDATE resume SET full_name =? WHERE uuid = ?")) {
                 ps.setString(2, resume.getUuid());
                 ps.setString(1, resume.getFullName());
                 executeUpdateWithCheck(ps, resume.getUuid());
             }
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM contact WHERE resume_uuid = ?")) {
+            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM contact WHERE resume_uuid =?")) {
                 ps.setString(1, resume.getUuid());
+                ps.execute();
             }
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM section WHERE resume_uuid = ?")) {
+            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM section WHERE resume_uuid =?")) {
                 ps.setString(1, resume.getUuid());
+                ps.execute();
             }
 
             insertInContact(resume, connection);

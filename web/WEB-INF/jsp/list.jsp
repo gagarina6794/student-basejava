@@ -1,8 +1,8 @@
 <%@ page import="com.urise.webapp.model.Resume" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.urise.webapp.model.ContactType" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -23,8 +23,8 @@
            <jsp:useBean id="resume" type="com.urise.webapp.model.Resume"/>
            <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
            <td><%=ContactType.EMAIL.toHtml(resume.getContacts(ContactType.EMAIL))%></td>
-           <td><a href="resume?uuid = ${resume.uuid}&action=delete"><img src="img/delete.png"></a></td>
-           <td><a href="resume?uuid = ${resume.uuid}&action=edit"><img src="img/pencil.png"></a></td>
+           <td><a href="resume?uuid=${resume.uuid}&action=delete"><img src="img/delete.png"></a></td>
+           <td><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></td>
        </tr>
        </c:forEach>
     </table>
