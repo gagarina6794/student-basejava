@@ -1,6 +1,7 @@
 package com.urise.webapp.web;
 
 import com.urise.webapp.Config;
+import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
 
@@ -11,6 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.urise.webapp.ResumeTestData.fillBulltedListSection;
+import static com.urise.webapp.model.SectionType.ACHIEVEMENTS;
+import static com.urise.webapp.model.SectionType.QUALIFICATION;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -30,7 +37,13 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = storage.get(uuid);
+        Resume resume = null;
+        try {
+            resume = storage.get(uuid);
+        } catch (NotExistStorageException e) {
+            resume = new Resume(uuid, fullName);
+            storage.save(resume);
+        }
         resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -38,6 +51,24 @@ public class ResumeServlet extends HttpServlet {
                 resume.addContacts(type, value);
             } else {
                 resume.getContacts().remove(type);
+            }
+        }
+
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                switch (type) {
+                    case ACHIEVEMENTS:
+                    case QUALIFICATION:
+                        resume.addSection(type, new BulletedListSection(value.split("\n")));
+                        break;
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.addSection(type, new SimpleTextSection(value));
+                        break;
+                }
+            } else {
+                resume.getSections().remove(type);
             }
         }
         storage.update(resume);
@@ -53,35 +84,29 @@ public class ResumeServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
             return;
         }
+        String dispatcher = "/WEB-INF/jsp/list.jsp";
         Resume resume = null;
         switch (action) {
             case "delete":
                 storage.delete(uuid);
                 response.sendRedirect("resume");
                 return;
+            case "add":
+                resume = new Resume("");
+                dispatcher = "/WEB-INF/jsp/add.jsp";
+                break;
             case "view":
+                resume = storage.get(uuid);
+                break;
             case "edit":
                 resume = storage.get(uuid);
+                dispatcher = "/WEB-INF/jsp/edit.jsp";
                 break;
             default:
                 throw new IllegalArgumentException("Action" + action + " is illegal");
         }
         request.setAttribute("resume", resume);
-        request.getRequestDispatcher(("view".equals(action) ? "/WEB-INF/jsp/list.jsp" : "/WEB-INF/jsp/edit.jsp")).forward(request, response);
-      /*  request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-        PrintWriter writer = response.getWriter();
-        writer.write("<link rel=\"stylesheet\" type =\"text/css\" href=\"css/style.css\"/>");
-
-        writer.write("<table border=\"1\"><tr><th>Uuid: " + "</th>");
-        writer.write("<th>Name: " + "</th></tr>");
-
-        for (Resume resume : storage.getAllSorted()) {
-            writer.write("<tr><td>" + resume.getUuid() + "</td>");
-            writer.write("<td>" + resume.getFullName() + "</td></tr>");
-        }
-        writer.write("</table>");
-*/
+        request.getRequestDispatcher(dispatcher).forward(request, response);
+        //request.getRequestDispatcher(("view".equals(action) ? "/WEB-INF/jsp/list.jsp" : "/WEB-INF/jsp/edit.jsp")).forward(request, response);
     }
 }

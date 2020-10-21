@@ -13,7 +13,7 @@ public class ResumeTestData {
         System.out.println(fillResume("uuid1", "Григорий Кислин"));
     }
 
-    private static void fillBulltedListSection(String text, List<String> content) {
+    public static void fillBulltedListSection(String text, List<String> content) {
         StringBuilder data = new StringBuilder(text);
         while (data.length() > 0) {
             content.add(data.substring(0, data.indexOf("\n")));

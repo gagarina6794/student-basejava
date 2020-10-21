@@ -11,7 +11,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/style.css">
     <jsp:useBean id="resume" type="com.urise.webapp.model.Resume" scope="request"/>
-    <title>Резюме ${resume.fullName}</title>
+    <title>Резюме ${resume.uuid}</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
@@ -20,14 +20,14 @@
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Имя:</dt>
-            <dd><input type="text" name="fullName" size="50" value="${resume.fullName}"></dd>
+            <dd><input type="text" name="fullName" size="50"></dd>
         </dl>
         <h3>Контакты:</h3>
         <p>
             <c:forEach var="type" items="<%=ContactType.values()%>">
         <dl>
             <dt>${type.title}</dt>
-            <dd><input type="text" name="${type.name()}" size="30" value="${resume.getContacts(type)}"></dd>
+            <dd><input type="text" name="${type.name()}" size="30"></dd>
         </dl>
         </c:forEach>
         </p>
@@ -39,18 +39,11 @@
             <dt>${sectionType.title}</dt>
             <c:choose>
                 <c:when test="${sectionType=='OBJECTIVE' || sectionType=='PERSONAL'}">
-                    <dd><input type="text" name='${sectionType}' size="30"
-                               value="${resume.getSections(sectionType).getContent()}"></dd>
+                    <dd><input type="text" name='${sectionType}' size="30"></dd>
                 </c:when>
                 <c:when test="${sectionType=='QUALIFICATION' || sectionType=='ACHIEVEMENTS'}">
-                    <c:if test="${(resume.getSections(sectionType)).getContent() != null}">
-                        <textarea rows="10" cols="45"
-                                name='${sectionType}'><%=String.join("\n", ((BulletedListSection) resume.getSections(sectionType)).getContent())%></textarea>
-                    </c:if>
-                    <c:if test="${(resume.getSections(sectionType)).getContent() == null}">
                         <textarea rows="10" cols="45"
                                   name='${sectionType}'></textarea>
-                    </c:if>
                 </c:when>
                 <c:otherwise></c:otherwise>
             </c:choose>
