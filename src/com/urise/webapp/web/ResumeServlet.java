@@ -37,13 +37,7 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = null;
-        try {
-            resume = storage.get(uuid);
-        } catch (NotExistStorageException e) {
-            resume = new Resume(uuid, fullName);
-            storage.save(resume);
-        }
+        Resume resume = storage.get(uuid);
         resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -60,7 +54,14 @@ public class ResumeServlet extends HttpServlet {
                 switch (type) {
                     case ACHIEVEMENTS:
                     case QUALIFICATION:
-                        resume.addSection(type, new BulletedListSection(value.split("\n")));
+                        String[] informaion = value.split("\n");
+                        List<String> contentList = new ArrayList<>();
+                        for(int i = 0; i<informaion.length; i++){
+                            if(informaion[i].trim().length() != 0){
+                               contentList.add(informaion[i]);
+                            }
+                        }
+                        resume.addSection(type,new BulletedListSection(contentList));
                         break;
                     case OBJECTIVE:
                     case PERSONAL:
@@ -93,10 +94,12 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "add":
                 resume = new Resume("");
-                dispatcher = "/WEB-INF/jsp/add.jsp";
+                storage.save(resume);
+                dispatcher = "/WEB-INF/jsp/edit.jsp";
                 break;
             case "view":
                 resume = storage.get(uuid);
+                dispatcher = "/WEB-INF/jsp/view.jsp";
                 break;
             case "edit":
                 resume = storage.get(uuid);
@@ -107,6 +110,6 @@ public class ResumeServlet extends HttpServlet {
         }
         request.setAttribute("resume", resume);
         request.getRequestDispatcher(dispatcher).forward(request, response);
-        //request.getRequestDispatcher(("view".equals(action) ? "/WEB-INF/jsp/list.jsp" : "/WEB-INF/jsp/edit.jsp")).forward(request, response);
+      //  request.getRequestDispatcher(("view".equals(action) ? "/WEB-INF/jsp/list.jsp" : "/WEB-INF/jsp/edit.jsp")).forward(request, response);
     }
 }
