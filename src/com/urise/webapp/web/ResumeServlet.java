@@ -37,7 +37,16 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = storage.get(uuid);
+        boolean isNew = true;
+        Resume resume;
+        if (uuid.length() == 0) {
+            resume = new Resume(fullName);
+            storage.save(resume);
+        } else {
+            resume = storage.get(uuid);
+            isNew = false;
+        }
+
         resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -56,12 +65,15 @@ public class ResumeServlet extends HttpServlet {
                     case QUALIFICATION:
                         String[] informaion = value.split("\n");
                         List<String> contentList = new ArrayList<>();
-                        for(int i = 0; i<informaion.length; i++){
-                            if(informaion[i].trim().length() != 0){
-                               contentList.add(informaion[i]);
+                        for (int i = 0; i < informaion.length; i++) {
+                            if (informaion[i].trim().length() != 0) {
+                                contentList.add(informaion[i]);
                             }
                         }
-                        resume.addSection(type,new BulletedListSection(contentList));
+                        String last = contentList.get(contentList.size() - 1).replace("\r", "");
+                        contentList.remove(contentList.size() - 1);
+                        contentList.add(last);
+                        resume.addSection(type, new BulletedListSection(contentList));
                         break;
                     case OBJECTIVE:
                     case PERSONAL:
@@ -93,8 +105,8 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "add":
-                resume = new Resume("");
-                storage.save(resume);
+                resume = new Resume("", "");
+                //  storage.save(resume);
                 dispatcher = "/WEB-INF/jsp/edit.jsp";
                 break;
             case "view":
@@ -110,6 +122,6 @@ public class ResumeServlet extends HttpServlet {
         }
         request.setAttribute("resume", resume);
         request.getRequestDispatcher(dispatcher).forward(request, response);
-      //  request.getRequestDispatcher(("view".equals(action) ? "/WEB-INF/jsp/list.jsp" : "/WEB-INF/jsp/edit.jsp")).forward(request, response);
+        //  request.getRequestDispatcher(("view".equals(action) ? "/WEB-INF/jsp/list.jsp" : "/WEB-INF/jsp/edit.jsp")).forward(request, response);
     }
 }
