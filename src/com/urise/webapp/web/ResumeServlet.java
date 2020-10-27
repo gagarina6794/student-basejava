@@ -39,7 +39,11 @@ public class ResumeServlet extends HttpServlet {
         String fullName = request.getParameter("fullName");
         boolean isNew = true;
         Resume resume;
-        if (uuid.length() == 0) {
+        if (uuid.length() == 0 && fullName.length() == 0){
+            response.sendRedirect("resume");
+            return;
+        }
+        if (uuid.length() == 0 || fullName.length() == 0) {
             resume = new Resume(fullName);
             storage.save(resume);
         } else {
