@@ -39,6 +39,7 @@ public class Organization implements Comparable<Organization>, Serializable {
         this.experiences = experiences;
     }
 
+
     public Link getLink() {
         return link;
     }

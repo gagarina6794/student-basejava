@@ -4,6 +4,7 @@ import com.urise.webapp.Config;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
+import com.urise.webapp.util.DateUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,18 +40,18 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        boolean isNew = true;
+        //    boolean isNew = true;
         Resume resume;
-        if (uuid.length() == 0 && fullName.length() == 0){
+        if (fullName.length() == 0) {
             response.sendRedirect("resume");
             return;
         }
-        if (uuid.length() == 0 || fullName.length() == 0) {
+        if (uuid.length() == 0) {
             resume = new Resume(fullName);
             storage.save(resume);
         } else {
             resume = storage.get(uuid);
-            isNew = false;
+            //       isNew = false;
         }
 
         resume.setFullName(fullName);
@@ -63,6 +66,7 @@ public class ResumeServlet extends HttpServlet {
 
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
+            String[] orgInfo = request.getParameterValues(type.name());
             if (value != null && value.trim().length() != 0) {
                 switch (type) {
                     case ACHIEVEMENTS:
@@ -83,6 +87,32 @@ public class ResumeServlet extends HttpServlet {
                     case PERSONAL:
                         resume.addSection(type, new SimpleTextSection(value));
                         break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        List<Organization> organizationList = new ArrayList<>();
+                        String[] links = request.getParameterValues(type.name() + "Link");
+                        for (int i = 0; i < orgInfo.length; i++) {
+                            String name = orgInfo[i];
+                            if (name.length() != 0) {
+                                List<Organization.Experience> experiences = new ArrayList<>();
+                                String[] dateFrom = request.getParameterValues(type.name() + "DateFrom" + i);
+                                String[] dateTo = request.getParameterValues(type.name() + "DateTo" + i);
+                                String[] title = request.getParameterValues(type.name() + "Title" + i);
+                                String[] information = request.getParameterValues(type.name() + "Info" + i);
+                                for (int j = 0; j < title.length; j++) {
+                                    if (dateFrom[j].length() != 0 &&
+                                            dateTo[j].length() != 0 &&
+                                            title[j].length() != 0 &&
+                                            information[j].length() != 0) {
+                                        experiences.add(new Organization.Experience(YearMonth.parse(dateFrom[j], DateTimeFormatter.ofPattern("uuuu-M")),
+                                                YearMonth.parse(dateTo[j], DateTimeFormatter.ofPattern("uuuu-M")), title[j], information[j].replaceAll("\r|\n","")));
+                                    }
+                                }
+                                organizationList.add(new Organization(name, new Link(name, links[i]), experiences));
+                            }
+                        }
+                        resume.getSections().put(type, new OrganizationSection(organizationList));
+                        break;
                 }
             } else {
                 resume.getSections().remove(type);
@@ -91,7 +121,6 @@ public class ResumeServlet extends HttpServlet {
         storage.update(resume);
         response.sendRedirect("resume");
     }
-
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String uuid = request.getParameter("uuid");
