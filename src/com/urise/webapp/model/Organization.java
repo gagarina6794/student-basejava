@@ -16,7 +16,7 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Comparable<Organization>, Serializable {
     private static final long serialVersionUID = 1L;
-
+    public static final Organization EMPTY = new Organization("", new Link("", ""), Experience.EMPTY);
     private List<Experience> experiences = new ArrayList<>();
     private Link link;
     private String organizationName;
@@ -90,6 +90,7 @@ public class Organization implements Comparable<Organization>, Serializable {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Experience implements Serializable {
         private static final long serialVersionUID = 1L;
+        public static final Experience EMPTY = new Experience();
 
         @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth yearFrom;

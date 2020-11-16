@@ -105,7 +105,7 @@ public class ResumeServlet extends HttpServlet {
                                             title[j].length() != 0 &&
                                             information[j].length() != 0) {
                                         experiences.add(new Organization.Experience(YearMonth.parse(dateFrom[j], DateTimeFormatter.ofPattern("uuuu-M")),
-                                                YearMonth.parse(dateTo[j], DateTimeFormatter.ofPattern("uuuu-M")), title[j], information[j].replaceAll("\r|\n","")));
+                                                YearMonth.parse(dateTo[j], DateTimeFormatter.ofPattern("uuuu-M")), title[j], information[j].replaceAll("\r|\n", "")));
                                     }
                                 }
                                 organizationList.add(new Organization(name, new Link(name, links[i]), experiences));
@@ -138,8 +138,9 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "add":
-                resume = new Resume("", "");
+                // resume = new Resume("", "");
                 //  storage.save(resume);
+                resume = Resume.EMPTY;
                 dispatcher = "/WEB-INF/jsp/edit.jsp";
                 break;
             case "view":
@@ -148,6 +149,53 @@ public class ResumeServlet extends HttpServlet {
                 break;
             case "edit":
                 resume = storage.get(uuid);
+                for (SectionType type : SectionType.values()) {
+                    Section section = resume.getSections(type);
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            if (section == null) {
+                                section = SimpleTextSection.EMPTY;
+                            }
+                            break;
+                        case ACHIEVEMENTS:
+                        case QUALIFICATION:
+                            if (section == null) {
+                                section = BulletedListSection.EMPTY;
+                            }
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            OrganizationSection orgSection = (OrganizationSection) section;
+                            List<Organization> emptyFirstOrganizations = new ArrayList<>();
+                            emptyFirstOrganizations.add(Organization.EMPTY);
+                            if (orgSection != null) {
+                                for (Organization org : ((OrganizationSection) section).getContent()) {
+                                    List<Organization.Experience> emptyFirstPositions = new ArrayList<>();
+                                    emptyFirstPositions.add(Organization.Experience.EMPTY);
+                                    emptyFirstPositions.addAll(org.getExperiences());
+                                    emptyFirstOrganizations.add(new Organization(org.getOrganizationName(), org.getLink(), emptyFirstPositions));
+                                }
+                            }
+                            section = new OrganizationSection(emptyFirstOrganizations);
+                            break;
+                    }
+                    resume.addSection(type, section);
+                }
+           /*     for (SectionType type : new SectionType[]{SectionType.EXPERIENCE, SectionType.EDUCATION}) {
+                    OrganizationSection section = (OrganizationSection) resume.getSections(type);
+                    List<Organization> emptyFirstOrganizations = new ArrayList<>();
+                    emptyFirstOrganizations.add(Organization.EMPTY);
+                    if (section != null) {
+                        for (Organization org : section.getContent()) {
+                            List<Organization.Experience> emptyFirstPositions = new ArrayList<>();
+                            emptyFirstPositions.add(Organization.Experience.EMPTY);
+                            emptyFirstPositions.addAll(org.getExperiences());
+                            emptyFirstOrganizations.add(new Organization(org.getOrganizationName(),org.getLink(), emptyFirstPositions));
+                        }
+                    }
+                    resume.addSection(type, new OrganizationSection(emptyFirstOrganizations));
+                }*/
                 dispatcher = "/WEB-INF/jsp/edit.jsp";
                 break;
             default:

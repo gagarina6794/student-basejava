@@ -7,6 +7,8 @@ public class SimpleTextSection extends Section {
 
     private String content;
 
+    public static final SimpleTextSection EMPTY = new SimpleTextSection("");
+
     public String getContent() {
         return content;
     }

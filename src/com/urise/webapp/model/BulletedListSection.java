@@ -9,6 +9,8 @@ public class BulletedListSection extends Section {
 
     private List<String> content;
 
+    public static final BulletedListSection EMPTY = new BulletedListSection("");
+
     public BulletedListSection() {
     }
 
