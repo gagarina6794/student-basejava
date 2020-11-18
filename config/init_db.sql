@@ -1,4 +1,3 @@
-drop table resume;
 
 CREATE TABLE resume
 (
@@ -25,6 +24,4 @@ CREATE TABLE section
 CREATE UNIQUE INDEX contact_uuid_type_index
     ON contact (resume_uuid, type);
 
-DROP TABLE resume;
-DROP TABLE contact;
-DROP TABLE section;
+

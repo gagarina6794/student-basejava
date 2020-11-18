@@ -22,9 +22,9 @@ public class Config {
     public static Config get(){
         return INSTANCE;
     }
-
+//"/Users/lerapegushina/IdeaProjects/basejava/config/resumes.properties")
     private Config(){
-        try(InputStream is = new FileInputStream(new File("/Users/lerapegushina/IdeaProjects/basejava/config/resumes.properties"))){
+        try(InputStream is = Config.class.getResourceAsStream("/resumes.properties")){
             properties.load(is);
             storageDir = new File(properties.getProperty("storage.dir"));
             dbUrl = properties.getProperty("db.url");
