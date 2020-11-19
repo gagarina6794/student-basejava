@@ -45,7 +45,7 @@ public class DataStreamSerializer implements StorageSerialization {
                         break;
                     case OBJECTIVE:
                     case PERSONAL:
-                        var content = dis.readUTF();
+                        String content = dis.readUTF();
                         resume.getSections().put(sectionType, new SimpleTextSection(content));
                         break;
                     case EDUCATION:
@@ -118,7 +118,7 @@ public class DataStreamSerializer implements StorageSerialization {
 
     private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Writable<T> writable) throws IOException {
         dos.writeInt(collection.size());
-        for (var item : collection) {
+        for (T item : collection) {
             writable.writeCollection(item);
         }
     }
