@@ -14,7 +14,8 @@
 <p>
 <h2>${resume.fullName}&nbsp;<a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></h2>
 <p>
-<h3>Контакты:</h3>
+<c:if test="${resume.contacts.entrySet().size()!= 0}"><h3>Контакты:</h3></c:if>
+
 <c:forEach var="contactEntry" items="${resume.contacts}">
     <jsp:useBean id="contactEntry"
                  type="java.util.Map.Entry<com.urise.webapp.model.ContactType, java.lang.String>"/>
@@ -22,28 +23,29 @@
 </c:forEach>
 </p>
 <p>
-<h3>Секции:</h3>
+<c:if test="${resume.sections.entrySet().size()!= 0}"><h3>Секции:</h3></c:if>
 <c:forEach var="sectionType" items="<%=SectionType.values()%>">
     <p>
         <jsp:useBean id="sectionType" type="com.urise.webapp.model.SectionType"/>
-        <%=sectionType.getTitle()%>
         <c:choose>
             <c:when test="${sectionType=='OBJECTIVE' || sectionType=='PERSONAL'}">
                 <c:if test="${resume.getSections(sectionType).getContent() != null}">
-                <%=((SimpleTextSection) resume.getSections(sectionType)).getContent()%>
+                    <%=sectionType.getTitle()%>:
+                    <br><%=((SimpleTextSection) resume.getSections(sectionType)).getContent()%>
                 </c:if>
-                <c:if test="${(resume.getSections(sectionType)).getContent() == null}">
+                <%--<c:if test="${(resume.getSections(sectionType)).getContent() == null}">
                     <%=sectionType%>
-                </c:if>
+                </c:if>--%>
 
             </c:when>
             <c:when test="${sectionType=='QUALIFICATION' || sectionType=='ACHIEVEMENTS'}">
                 <c:if test="${(resume.getSections(sectionType)).getContent() != null}">
-                    <%=String.join("\n", ((BulletedListSection) resume.getSections(sectionType)).getContent())%>
+                    <%=sectionType.getTitle()%>:
+                    <br><%=String.join("\n", ((BulletedListSection) resume.getSections(sectionType)).getContent())%>
                 </c:if>
-                <c:if test="${(resume.getSections(sectionType)).getContent() == null}">
-                    <%=sectionType%>
-                </c:if>
+                <%-- <c:if test="${(resume.getSections(sectionType)).getContent() == null}">
+                   <%=sectionType%>
+               </c:if>--%>
             </c:when>
             <c:otherwise></c:otherwise>
         </c:choose>
