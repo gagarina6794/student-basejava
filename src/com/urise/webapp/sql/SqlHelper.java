@@ -1,7 +1,6 @@
 package com.urise.webapp.sql;
 
 import com.urise.webapp.exception.ExistStorageException;
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import org.postgresql.util.PSQLException;
 

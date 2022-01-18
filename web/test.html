@@ -3,8 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .item-hints .hint[data-position="1"] .hint-content {
+            top: 85px;
+            left: 50%;
+            margin-left: 56px;
+        }
+        .item-hints .hint-content {
+            color: #fff;
+            width: 300px;
+            position: absolute;
+            z-index: 5;
+            padding: 12px 0;
+            opacity: 0;
+            visibility: hidden;
+            -webkit-transition: opacity .7s ease,visibility .7s ease;
+            transition: opacity .7s ease,visibility .7s ease;
+            pointer-events: none;
+            color: #fff;
+            visibility: hidden;
+            pointer-events: none
+        }
+        .item-hints .hint:hover .hint-content {
+            color: #fff;
+            width: 300px;
+            position: absolute;
+            z-index: 5;
+            padding: 12px 0;
+            opacity: 1;
+            visibility: visible !important;
+            -webkit-transition: opacity .7s ease,visibility .7s ease;
+            transition: opacity .7s ease,visibility .7s ease;
+            pointer-events: none;
+            color: #fff;
+            visibility: hidden;
+            pointer-events: none
+        }
+        .item-hints .hint-content::before {
+            width: 0px;
+            bottom: 0;
+            left: 0;
+            content: '';
+            background-color: #fff;
+            height: 1px;
+            position: absolute;
+            transition: width 0.4s;
+        }
+        .item-hints .hint:hover .hint-content::before {
+            width: 180px;
+            transition: width 0.4s;
+        }
+        .item-hints .hint-content::after {
+            -webkit-transform-origin: 0 50%;
+            transform-origin: 0 50%;
+            -webkit-transform: rotate(-225deg);
+            transform: rotate(-225deg);
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            content: '';
+            background-color: #fff;
+            height: 1px;
+            position: absolute;
+            opacity: 1;
+            -webkit-transition: opacity .5s ease;
+            transition: opacity .5s ease;
+            transition-delay: 0s;
+            -webkit-transition-delay: 0s;
+            transition-delay: 0s;
+        }
+        .item-hints .hint:hover .hint-content::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        .item-hints .hint[data-position="4"] .hint-content {
+            bottom: 85px;
+            left: 50%;
+            margin-left: 56px;
+        }
+    </style>
 </head>
 <body>
-Test
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i&display=swap" rel="stylesheet">
+<div class="item-hints">
+    <label>text</label>
+    <div class="hint" data-position="4">
+        <div class="hint-content do--split-children">
+            <p>The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
