@@ -6,13 +6,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/${theme}.css">
     <jsp:useBean id="resume" type="com.urise.webapp.model.Resume" scope="request"/>
     <title>Резюме ${resume.fullName}</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <p>
-<h2>${resume.fullName}&nbsp;<a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></h2>
+<h2>${resume.fullName}&nbsp;<a href="resume?uuid=${resume.uuid}&action=edit&theme=${theme}"><img src="img/pencil.png"></a></h2>
 <p>
 <c:if test="${resume.contacts.entrySet().size()!= 0}"><h3>Контакты:</h3></c:if>
 

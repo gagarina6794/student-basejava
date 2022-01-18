@@ -1,36 +1,33 @@
 package com.urise.webapp.web;
 
 import com.urise.webapp.Config;
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
-import com.urise.webapp.util.DateUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.*;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import static com.urise.webapp.ResumeTestData.fillBulltedListSection;
-import static com.urise.webapp.model.SectionType.ACHIEVEMENTS;
-import static com.urise.webapp.model.SectionType.QUALIFICATION;
+import java.util.Set;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
     static final String JDBC_DRIVER = "org.postgresql.Driver";
+    private final Set<String> themes = new HashSet<>();
 
     @Override
     public void init() throws ServletException {
         try {
             Class.forName(JDBC_DRIVER);
             storage = Config.get().getSqlStorage();
+            themes.add("theme1");
+            themes.add("theme2");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -125,6 +122,14 @@ public class ResumeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
+        String theme = request.getParameter("theme");
+
+        if (!themes.contains(theme)) {
+            theme = "theme1";
+        }
+
+        request.setAttribute("theme", theme);
+
         if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
